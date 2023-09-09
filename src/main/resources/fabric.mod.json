@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "backburner",
+	"version": "${version}",
+	"name": "The back-burner",
+	"description": "Clientside to-do list for forgetful people.",
+	"authors": [
+		"Estecka"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/backburner",
+		"sources": "https://github.com/Estecka/mc-Backburner"
+	},
+	"license": "GNU AGPLv3",
+	"icon": "assets/backburner/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"client": [
+			"tk.estecka.backburner.Backburner"
+		]
+	},
+	"mixins": [
+		"backburner.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.22",
+		"minecraft": "~1.19.4",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
