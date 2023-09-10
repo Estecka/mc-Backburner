@@ -3,18 +3,14 @@ package tk.estecka.backburner;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Rect2i;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import tk.estecka.backburner.mixin.IDrawableHelperMixin;
+import tk.estecka.backburner.mixin.IDrawContextMixin;
 
 public class BacklogHud 
-extends DrawableHelper
 {
 	static private final Identifier TEXTURE_ID = new Identifier("backburner", "textures/gui/backlog.png");
 	static private final Rect2i ICON_REGION = new Rect2i(9, 9, 9, 9);
@@ -41,7 +37,7 @@ extends DrawableHelper
 		this.textRenderer = client.textRenderer;
 	}
 
-	public void	Render(MatrixStack matrices, float tickDelta){
+	public void	Render(DrawContext context, float tickDelta){
 		final var items = BacklogData.instance.content;
 		if (items == null || items.isEmpty())
 			return;
@@ -50,39 +46,38 @@ extends DrawableHelper
 		int y = 32;
 
 		if (isHidden){
-			RenderSystem.setShaderTexture(0, TEXTURE_ID);
 			RenderSystem.enableBlend();
-			drawTexture(matrices, x, y, ICON_REGION.getX(), ICON_REGION.getY(), ICON_REGION.getWidth(), ICON_REGION.getHeight());
+			context.drawTexture(TEXTURE_ID, x, y, ICON_REGION.getX(), ICON_REGION.getY(), ICON_REGION.getWidth(), ICON_REGION.getHeight());
 			return;
 		}
 		
-		y = DrawHeader(matrices, x, y, maxWidth, "Backlog");
+		y = DrawHeader(context, x, y, maxWidth, "Backlog");
 		x+=2;
 
 		for (int i=0; i<items.size(); i++){
-			y = DrawItem(matrices, x, y+1, maxWidth, String.format("%d • %s", i, items.get(i)));
+			y = DrawItem(context, x, y+1, maxWidth, String.format("%d • %s", i, items.get(i)));
 		}
 	}
 
 	/**
 	 * @return The y coordinate of the element's bottom
 	 */
-	public int	DrawHeader(MatrixStack matrices, int anchorX, int anchorY, int elementWdt, String title){
+	public int	DrawHeader(DrawContext context, int anchorX, int anchorY, int elementWdt, String title){
 		RenderSystem.setShaderTexture(0, TEXTURE_ID);
 		RenderSystem.enableBlend();
 		int width  = (HEADER_REGION.getWidth()  - HEADER_TEXT.getWidth() ) + textRenderer.getWidth(title);
 		int height = (HEADER_REGION.getHeight() - HEADER_TEXT.getHeight()) + textRenderer.fontHeight;
 
 		// drawTexture(matrices, anchorX, anchorY, HEADER_REGION.getX(), HEADER_REGION.getY(), HEADER_REGION.getWidth(), HEADER_REGION.getHeight());
-		Draw9Patch(matrices, anchorX, anchorY, width, height, HEADER_REGION, HEADER_PATCH);
-		drawTextWithShadow(matrices, textRenderer, title, anchorX+HEADER_TEXT.getX() , anchorY+HEADER_TEXT.getY(), 0xffffffbb);
+		Draw9Patch(context, anchorX, anchorY, width, height, HEADER_REGION, HEADER_PATCH);
+		context.drawTextWithShadow(textRenderer, title, anchorX+HEADER_TEXT.getX() , anchorY+HEADER_TEXT.getY(), 0xffffffbb);
 		return anchorY + height;
 	}
 
 	/**
 	 * @return The y coordinate of the element's bottom
 	 */
-	public int	DrawItem(MatrixStack matrices, int anchorX, int anchorY, int textWidth, String text){
+	public int	DrawItem(DrawContext context, int anchorX, int anchorY, int textWidth, String text){
 		RenderSystem.setShaderTexture(0, TEXTURE_ID);
 		RenderSystem.enableBlend();
 
@@ -91,10 +86,10 @@ extends DrawableHelper
 		int totalWidth  = (ITEM_REGION.getWidth()  - ITEM_TEXT.getWidth() ) + textWidth;
 		int totalHeight = (ITEM_REGION.getHeight() - ITEM_TEXT.getHeight()) + (textRenderer.fontHeight * lines.size());
 
-		Draw9Patch(matrices, anchorX, anchorY, totalWidth, totalHeight, ITEM_REGION, ITEM_PATCH);
+		Draw9Patch(context, anchorX, anchorY, totalWidth, totalHeight, ITEM_REGION, ITEM_PATCH);
 
-		var vProv = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-		var m = matrices.peek().getPositionMatrix();
+		var vProv = context.getVertexConsumers();
+		var m = context.getMatrices().peek().getPositionMatrix();
 		int outerlineColor = 0x440088ff;
 		int outlineColor   = 0xbb0044bb;
 		int light = LightmapTextureManager.MAX_LIGHT_COORDINATE;
@@ -113,7 +108,8 @@ extends DrawableHelper
 		return anchorY + totalHeight;
 	}
 
-	public void	Draw9Patch(MatrixStack matrices, int baseX, int baseY, int totalW, int totalH, Rect2i region, Rect2i patch){
+	public void	Draw9Patch(DrawContext context, int baseX, int baseY, int totalW, int totalH, Rect2i region, Rect2i patch){
+		IDrawContextMixin contextpp = (IDrawContextMixin)context;
 		int[] x = new int[4];
 		int[] y = new int[4];
 		int[] u = new int[4];
@@ -142,8 +138,8 @@ extends DrawableHelper
 		for (int tileX=0; tileX<3; ++tileX)
 		for (int tileY=0; tileY<3; ++tileY) 
 		{
-			IDrawableHelperMixin.callDrawTexturedQuad(
-				matrices.peek().getPositionMatrix(),
+			contextpp.callDrawTexturedQuad(
+				TEXTURE_ID,
 				x[tileX], x[tileX+1],
 				y[tileY], y[tileY+1],
 				z,
