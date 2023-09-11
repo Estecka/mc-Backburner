@@ -1,13 +1,13 @@
 package tk.estecka.backburner;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -81,11 +81,13 @@ public class BacklogCommands
 
 		root.then(literal("remove")
 			.then(argument(INDEX_ARG, integer(0))
+				.suggests(BacklogCommands::IndexAutofill)
 				.executes(BacklogCommands::Remove)
 			)
 		);
 		root.then(literal("pop")
 			.then(argument(INDEX_ARG, integer(0))
+				.suggests(BacklogCommands::IndexAutofill)
 				.executes(BacklogCommands::Remove)
 			)
 		);
@@ -111,11 +113,13 @@ public class BacklogCommands
 
 		root.then(literal("bump")
 			.then(argument(INDEX_ARG, integer(0))
+				.suggests(BacklogCommands::IndexAutofill)
 				.executes(BacklogCommands::Bump)
 			)
 		);
 		root.then(literal("bump")
 			.then(argument(INDEX_ARG, integer(0))
+				.suggests(BacklogCommands::IndexAutofill)
 				.then(argument(OFFSET_ARG, integer())
 					.executes(BacklogCommands::BumpOffset)
 				)
@@ -123,6 +127,7 @@ public class BacklogCommands
 		);
 		root.then(literal("move")
 			.then(argument(SRC_ARG, integer(0))
+				.suggests(BacklogCommands::IndexAutofill)
 				.then(argument(DST_ARG, integer(0))
 					.executes(BacklogCommands::Move)
 				)
@@ -130,14 +135,42 @@ public class BacklogCommands
 		);
 		root.then(literal("edit")
 			.then(argument(INDEX_ARG, integer(0))
+				.suggests(BacklogCommands::EntryAutofill)
 				.then(argument(VALUE_ARG, greedyString())
-					.suggests(BacklogCommands::EditAutofill)
 					.executes(BacklogCommands::Set)
+					.suggests(BacklogCommands::ValueAutofill)
 				)
 			)
 		);
 
 		dispatcher.register(root);
+	}
+
+
+/******************************************************************************/
+/* # Autofill                                                                 */
+/******************************************************************************/
+	
+	static private CompletableFuture<Suggestions> EntryAutofill(final CommandContext<FabricClientCommandSource> context, final SuggestionsBuilder builder){
+		final var items = BacklogData.instance.content;
+		for (int i=0; i<items.size(); i++)
+			builder.suggest(String.format("%d %s", i, items.get(i)));
+		return builder.buildFuture();
+	}
+	
+	static private CompletableFuture<Suggestions> IndexAutofill(final CommandContext<FabricClientCommandSource> context, final SuggestionsBuilder builder){
+		final var items = BacklogData.instance.content;
+		for (int i=0; i<items.size(); i++)
+			builder.suggest(i, new LiteralMessage(items.get(i)));
+		return builder.buildFuture();
+	}
+
+	static private CompletableFuture<Suggestions> ValueAutofill(final CommandContext<FabricClientCommandSource> context, final SuggestionsBuilder builder){
+		final var items = BacklogData.instance.content;
+		int i = getInteger(context, INDEX_ARG);
+		if (0 <= i && i < items.size())
+			builder.suggest(items.get(i));
+		return builder.buildFuture();
 	}
 
 
@@ -210,18 +243,9 @@ public class BacklogCommands
 		return Set(context, getInteger(context, INDEX_ARG), getString(context, VALUE_ARG));
 	}
 
-
 /******************************************************************************/
 /* # Command Logic                                                            */
 /******************************************************************************/
-
-	static private CompletableFuture<Suggestions> EditAutofill(final CommandContext<FabricClientCommandSource> context, final SuggestionsBuilder builder){
-		final var items = BacklogData.instance.content;
-		int i = getInteger(context, INDEX_ARG);
-		if (0 <= i && i < items.size())
-			builder.suggest(items.get(i));
-		return builder.buildFuture();
-	}
 
 	static private void	PrintEntry(CommandContext<FabricClientCommandSource> context, Text prefix, int index, String value) {
 		var msg = MutableText.of(Text.empty().getContent())
