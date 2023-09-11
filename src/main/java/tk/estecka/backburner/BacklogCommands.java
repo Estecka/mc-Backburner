@@ -3,14 +3,18 @@ package tk.estecka.backburner;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import java.util.concurrent.CompletableFuture;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static com.mojang.brigadier.arguments.BoolArgumentType.bool;
 import static com.mojang.brigadier.arguments.BoolArgumentType.getBool;
@@ -124,9 +128,10 @@ public class BacklogCommands
 				)
 			)
 		);
-		root.then(literal("set")
+		root.then(literal("edit")
 			.then(argument(INDEX_ARG, integer(0))
 				.then(argument(VALUE_ARG, greedyString())
+					.suggests(BacklogCommands::EditAutofill)
 					.executes(BacklogCommands::Set)
 				)
 			)
@@ -209,6 +214,14 @@ public class BacklogCommands
 /******************************************************************************/
 /* # Command Logic                                                            */
 /******************************************************************************/
+
+	static private CompletableFuture<Suggestions> EditAutofill(final CommandContext<FabricClientCommandSource> context, final SuggestionsBuilder builder){
+		final var items = BacklogData.instance.content;
+		int i = getInteger(context, INDEX_ARG);
+		if (0 <= i && i < items.size())
+			builder.suggest(items.get(i));
+		return builder.buildFuture();
+	}
 
 	static private void	PrintEntry(CommandContext<FabricClientCommandSource> context, Text prefix, int index, String value) {
 		var msg = MutableText.of(Text.empty().getContent())
