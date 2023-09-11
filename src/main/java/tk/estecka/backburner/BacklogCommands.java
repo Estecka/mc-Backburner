@@ -20,14 +20,13 @@ import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 
 public class BacklogCommands
-// implements Command<FabricClientCommandSource>
 {
 	static public final Identifier ID = new Identifier("backburner", "stack");
 
 	static public final String BOOL_ARG  = "bool";
 	static public final String INDEX_ARG = "index";
 	static public final String OFFSET_ARG = "offset";
-	static public final String VALUE_ARG = "value";
+	static public final String VALUE_ARG = "text";
 	static public final String SRC_ARG = "from";
 	static public final String DST_ARG = "to";
 
@@ -98,13 +97,16 @@ public class BacklogCommands
 		// );
 
 		root.then(literal("hide")
+			.executes(BacklogCommands::HideToogle)
+		);
+		root.then(literal("hide")
 			.then(argument(BOOL_ARG, bool())
 				.executes(BacklogCommands::Hide)
 			)
 		);
 
 		root.then(literal("bump")
-			.then(argument(INDEX_ARG, integer())
+			.then(argument(INDEX_ARG, integer(0))
 				.executes(BacklogCommands::Bump)
 			)
 		);
@@ -119,6 +121,13 @@ public class BacklogCommands
 			.then(argument(SRC_ARG, integer(0))
 				.then(argument(DST_ARG, integer(0))
 					.executes(BacklogCommands::Move)
+				)
+			)
+		);
+		root.then(literal("set")
+			.then(argument(INDEX_ARG, integer(0))
+				.then(argument(VALUE_ARG, greedyString())
+					.executes(BacklogCommands::Set)
 				)
 			)
 		);
@@ -173,6 +182,11 @@ public class BacklogCommands
 		return 1;
 	}
 
+	static private int	HideToogle(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
+		BacklogHud.isHidden = !BacklogHud.isHidden;
+		return 1;
+	}
+
 	static private int	Bump(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
 		int i = getInteger(context, INDEX_ARG);
 		return Move(context, i, i-1);
@@ -185,6 +199,10 @@ public class BacklogCommands
 
 	static private int	Move(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
 		return Move(context, getInteger(context, SRC_ARG), getInteger(context, DST_ARG));
+	}
+
+	static private int	Set(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
+		return Set(context, getInteger(context, INDEX_ARG), getString(context, VALUE_ARG));
 	}
 
 
@@ -215,7 +233,27 @@ public class BacklogCommands
 
 		PrintEntry(context, ADDED_FEEDBACK, index, value);
 		items.add(index, value);
-		BacklogData.TrySave();;
+		BacklogData.TrySave();
+		return 1;
+	}
+
+	static int	Set(CommandContext<FabricClientCommandSource> context, int index, String value){
+		final var items = BacklogData.instance.content;
+		if (items.isEmpty()){
+			context.getSource().sendError(Text.literal("Nothing to edit."));
+			return 0;
+		}
+
+		if (index < 0 || index > items.size()-1){
+			context.getSource().sendError(Text.literal(String.format("Index %d out of bounds.", index)));
+			return -1;
+		}
+
+		PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index));
+		items.remove(index);
+		PrintEntry(context, ADDED_FEEDBACK, index, value);
+		items.add(index, value);
+		BacklogData.TrySave();
 		return 1;
 	}
 
@@ -225,16 +263,12 @@ public class BacklogCommands
 			context.getSource().sendError(Text.literal("Nothing to remove."));
 			return 0;
 		}
-
-		if (index < 0){
-			context.getSource().sendError(Text.literal(String.format("Index %d invalid. Removing first item", index)));
-			index = 0;
+		
+		if (index < 0 || index > items.size()){
+			context.getSource().sendError(Text.literal(String.format("Index %d out of bounds. Max %d.", index, items.size()-1)));
+			return -1;
 		}
 		
-		if (index > items.size()){
-			context.getSource().sendError(Text.literal(String.format("Index %d out of bounds. Removing last item.", index)));
-			index = items.size() - 1;
-		}
 
 		PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index));
 		items.remove(index);
