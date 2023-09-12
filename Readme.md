@@ -21,13 +21,14 @@ All sub-commands use `/note` as a root.
 - `shift` Removes the bottom-most item.
 - `remove <index>` Removes the specified item.
 
-### Reorganizing
+### Editing
+- `edit <index> <text>` Overwrites an existing item. Auto-completion will offer you the old value.
 - `bump <index>` Moves an item one place upward.
-- `bump <index> <offset>` Moves an item the given amount of places. Positive values move upwrad, negative values move downard.
-- `move <from> <to>` Moves onr item from one index to another.
+- `bump <index> <offset>` Moves an item the given amount of places. Positive values move upward, negative values move downward.
+- `move <from> <to>` Moves an item from one index to another.
 
 ### Hud-control
-- `hide <bool>` Hides or show the backlog on the HUD.
+- `hide <bool>` Toogles the backlog hud On or Off. Can be called with no argument.
 
 ### Debug
 These commands shouldn't ever need to be used for normal usage.
@@ -36,8 +37,8 @@ These commands shouldn't ever need to be used for normal usage.
 
 ## File locations
 
-Backlog files are saved as JSON arrays.
+Backlogs are saved as JSON arrays.
 
 For singleplayer worlds, they are saved at the root of the world's directory as `backlog.json`
 
-For multiplayer, they are saved under `.minecraft/remote_backlogs/`, using the ip/address and port of the server as the file name. LAN world are handled the same way.
+For multiplayer, they are saved under `.minecraft/remote_backlogs/`, using the ip/address and port of the server as the file name. LAN worlds are handled the same way.

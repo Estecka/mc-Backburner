@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"id": "backburner",
 	"version": "${version}",
-	"name": "The back-burner",
+	"name": "Back-burner",
 	"description": "Clientside to-do list for forgetful people.",
 	"authors": [
 		"Estecka"

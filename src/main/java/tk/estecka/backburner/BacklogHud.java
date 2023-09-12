@@ -13,7 +13,7 @@ import tk.estecka.backburner.mixin.IDrawContextMixin;
 public class BacklogHud 
 {
 	static private final Identifier TEXTURE_ID = new Identifier("backburner", "textures/gui/backlog.png");
-	static private final Rect2i ICON_REGION = new Rect2i(9, 9, 9, 9);
+	static private final Rect2i ICON_REGION = new Rect2i(7, 8, 11, 10);
 
 	static private final Rect2i HEADER_REGION = new Rect2i( 7, 26, 83, 15);
 	static private final Rect2i HEADER_PATCH  = new Rect2i(20,  10, 61, 1);
