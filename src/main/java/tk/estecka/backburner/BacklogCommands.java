@@ -301,7 +301,7 @@ public class BacklogCommands
 			return 0;
 		}
 		
-		if (index < 0 || index > items.size()){
+		if (index < 0 || index > items.size()-1){
 			context.getSource().sendError(Text.literal(String.format("Index %d out of bounds. Max %d.", index, items.size()-1)));
 			return -1;
 		}
