@@ -21,12 +21,15 @@ implements SimpleSynchronousResourceReloadListener
 	}
 
 	public void	reload(ResourceManager manager){
+		BacklogHud.patches.clear();
 		for (Entry<Identifier, Resource> entry : manager.findResources("textures/gui/backlog", PatchReloadListener::AcceptsFile).entrySet()){
+			Identifier id = entry.getKey();
 			try {
 				PatchMeta mcmeta = PatchMeta.Decode(entry.getValue().getMetadata());
-				Backburner.LOGGER.warn("{} {} {}", entry.getKey(), mcmeta.base.width(), mcmeta.base.height());
+				// Backburner.LOGGER.warn("{} {}", id, mcmeta);
+				BacklogHud.patches.put(id, new PatchInfo(mcmeta));
 			} catch (IOException e) {
-				Backburner.LOGGER.error("{} : {}", entry.getKey(), e);
+				Backburner.LOGGER.error("{} : {}", id, e);
 			}
 		}
 

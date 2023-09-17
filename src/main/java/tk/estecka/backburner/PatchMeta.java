@@ -8,17 +8,21 @@ import net.minecraft.resource.metadata.ResourceMetadataReader;
 
 public class PatchMeta 
 {
-	static public record Size(int width, int height) {}
-	static public record Margin(int left, int top, int right, int bottom) {}
+	static public record Size(int width, int height) { 
+		public String toString() { return String.format("{%d,%d}", this.width, this.height); } 
+	}
+	static public record Margin(int left, int top, int right, int bottom) {
+		public String toString() { return String.format("[{%d,%d}, {%d,%d}]", this.left, this.top, this.right, this.bottom); }
+	}
 
 	static private final Gson gson = new Gson();
 	static public final ResourceMetadataReader<Size>   BASE_READER    = getReader(new TypeToken<Size>  (){}, "base"     );
 	static public final ResourceMetadataReader<Margin> PATCH_READER   = getReader(new TypeToken<Margin>(){}, "ninepatch");
-	static public final ResourceMetadataReader<Margin> PADDING_READER = getReader(new TypeToken<Margin>(){}, "margin"   );
+	static public final ResourceMetadataReader<Margin> PADDING_READER = getReader(new TypeToken<Margin>(){}, "padding"   );
 	static public final ResourceMetadataReader<Margin> TEXT_READER    = getReader(new TypeToken<Margin>(){}, "textarea" );
 	static private final PatchMeta DEFAULT = new PatchMeta();
 
-	public Size	base = new Size(64, 16);
+	public Size	base = new Size(16, 16);
 	public Margin padding   = new Margin(0, 0, 0, 0);
 	public Margin ninepatch = new Margin(0, 0, 0, 0);
 	public Margin textarea  = new Margin(0, 0, 0, 0);
@@ -38,5 +42,9 @@ public class PatchMeta
 			public T	fromJson(JsonObject json){ return gson.fromJson(json, type); }
 		};
 	};
+
+	public String	toString(){
+		return "( "+base+", "+padding+", "+ninepatch+", "+textarea+" )";
+	}
 
 }

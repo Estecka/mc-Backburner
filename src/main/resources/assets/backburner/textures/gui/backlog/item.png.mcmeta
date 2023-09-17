@@ -10,6 +10,8 @@
 		"bottom": 3
 	},
 	"padding": {
+		"left":   2,
+		"top":    1,
 		"bottom": 1
 	},
 	"textarea": {
