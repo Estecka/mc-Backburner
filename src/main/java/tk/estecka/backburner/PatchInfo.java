@@ -1,26 +1,26 @@
 package tk.estecka.backburner;
 
 public class PatchInfo {
+	static public final PatchInfo DEFAULT = new PatchInfo(new PatchMeta());
+
 	/**
 	 * The base size of the texture.
 	 */
 	public final int regionWidth, regionHeight;
-
 	/**
 	 * The minimum size of the GUI element, when containing no text.
 	 */
 	public final int minWidth, minHeight;
-	
 	/**
 	 * The position of the textArea, from the GUI element's origin.
 	 */
 	public final int textX, textY;
-
 	/**
 	 * The four positions of the patch's slices on the texture.
 	 * Normalized between 0 and 1.
 	 */
 	public final float[] u, v;
+	public final boolean[] hasPatchX, hasPatchY;
 
 	public PatchInfo(PatchMeta mcmeta){
 		this.regionWidth  = mcmeta.base.width ();
@@ -39,6 +39,13 @@ public class PatchInfo {
 		for (int i=0; i<4; ++i){
 			u[i] = uInt[i] / regionWidth;
 			v[i] = vInt[i] / regionHeight;
+		}
+
+		this.hasPatchX = new boolean[3];
+		this.hasPatchY = new boolean[3];
+		for (int i=0; i<3; ++i){
+			this.hasPatchX[i] = u[i] < u[i+1];
+			this.hasPatchY[i] = v[i] < v[i+1];
 		}
 	}
 
