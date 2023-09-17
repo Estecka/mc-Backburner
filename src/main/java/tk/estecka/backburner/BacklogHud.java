@@ -22,6 +22,8 @@ extends DrawableHelper
 	static private final Identifier HEADER_ID = new Identifier(Backburner.MODID, "textures/gui/backlog/header.png");
 	static private final Identifier ITEM_ID   = new Identifier(Backburner.MODID, "textures/gui/backlog/item.png"  );
 
+	static private final Text HEADER_TITLE = Text.translatable("backburner.header.title");
+
 	static public boolean isHidden = false;
 
 	private final MinecraftClient client;
@@ -51,7 +53,7 @@ extends DrawableHelper
 			return;
 		}
 		
-		y = DrawHeader(matrices, x, y, "Backlog");
+		y = DrawHeader(matrices, x, y, HEADER_TITLE.getString());
 
 		for (int i=0; i<items.size(); i++){
 			y = DrawItem(matrices, x, y, String.format("%d • %s", i, items.get(i)));
