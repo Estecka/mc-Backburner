@@ -1,6 +1,10 @@
 {
 	"base": {
-		"width": 11,
-		"height": 10
+		"width": 9,
+		"height": 9
+	},
+	"padding": {
+		"left": 2,
+		"top": 1
 	}
 }

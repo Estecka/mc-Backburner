@@ -47,55 +47,62 @@ extends DrawableHelper
 			PatchInfo patch = patches.getOrDefault(ICON_ID, PatchInfo.DEFAULT);
 			RenderSystem.setShaderTexture(0, ICON_ID);
 			RenderSystem.enableBlend();
-			Draw9Patch(matrices, x, y, patch.baseWidth, patch.baseHeight, patch);
+			Draw9Patch(matrices, x+patch.padding.left(), y+patch.padding.top(), patch.baseWidth, patch.baseHeight, patch);
 			return;
 		}
 		
-		y = DrawHeader(matrices, x, y, maxWidth, "Backlog");
-		x+=2;
+		y = DrawHeader(matrices, x, y, "Backlog");
 
 		for (int i=0; i<items.size(); i++){
-			y = DrawItem(matrices, x, y+1, maxWidth, String.format("%d • %s", i, items.get(i)));
+			y = DrawItem(matrices, x, y, String.format("%d • %s", i, items.get(i)));
 		}
 	}
 
 	/**
 	 * @return The y coordinate of the element's bottom
 	 */
-	public int	DrawHeader(MatrixStack matrices, int anchorX, int anchorY, int elementWdt, String title){
+	public int	DrawHeader(MatrixStack matrices, int anchorX, int anchorY, String title){
 		PatchInfo patch = patches.getOrDefault(HEADER_ID, PatchInfo.DEFAULT);
 		RenderSystem.setShaderTexture(0, HEADER_ID);
 		RenderSystem.enableBlend();
 		int width  = patch.minWidth  + textRenderer.getWidth(title);
 		int height = patch.minHeight + textRenderer.fontHeight;
 
-		Draw9Patch(matrices, anchorX, anchorY, width, height, patch);
-		drawTextWithShadow(matrices, textRenderer, title, anchorX+patch.textX , anchorY+patch.textY, 0xffffffbb);
-		return anchorY + height;
+		int imgX = anchorX + patch.padding.left();
+		int imgY = anchorY + patch.padding.top ();
+		int textX = imgX + patch.textX;
+		int textY = imgY + patch.textY;
+
+		Draw9Patch(matrices, imgX, imgY, width, height, patch);
+		drawTextWithShadow(matrices, textRenderer, title, textX, textY, 0xffffffbb);
+		return anchorY + height + patch.paddingVertical;
 	}
 
 	/**
 	 * @return The y coordinate of the element's bottom
 	 */
-	public int	DrawItem(MatrixStack matrices, int anchorX, int anchorY, int textWidth, String text){
+	public int	DrawItem(MatrixStack matrices, int anchorX, int anchorY, String text){
 		PatchInfo patch = patches.getOrDefault(ITEM_ID, PatchInfo.DEFAULT);
 		RenderSystem.setShaderTexture(0, ITEM_ID);
 		RenderSystem.enableBlend();
 
-		var lines = textRenderer.wrapLines(Text.literal(text), textWidth);
+		int imgX = anchorX + patch.padding.left();
+		int imgY = anchorY + patch.padding.top();
+		int textX = imgX + patch.textX;
+		int textY = imgY + patch.textY;
 
-		int totalWidth  = patch.minWidth  + textWidth;
-		int totalHeight = patch.minHeight + (textRenderer.fontHeight * lines.size());
+		int imgWdt  = maxWidth - patch.paddingHorizontal;
+		int textWdt = imgWdt - patch.minWidth;
+		var lines = textRenderer.wrapLines(Text.literal(text), textWdt);
+		int textureHeight = patch.minHeight + (textRenderer.fontHeight * lines.size());
 
-		Draw9Patch(matrices, anchorX, anchorY, totalWidth, totalHeight, patch);
+		Draw9Patch(matrices, imgX, imgY, imgWdt, textureHeight, patch);
 
 		var vProv = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
 		var m = matrices.peek().getPositionMatrix();
 		int outerlineColor = 0x440088ff;
 		int outlineColor   = 0xbb0044bb;
 		int light = LightmapTextureManager.MAX_LIGHT_COORDINATE;
-		int textX = anchorX + patch.textX;
-		int textY = anchorY + patch.textY;
 		for (var l : lines){
 			textRenderer.drawWithOutline(l, textX-1, textY-1, outlineColor, outerlineColor, m, vProv, light);
 			textRenderer.drawWithOutline(l, textX-1, textY+1, outlineColor, outerlineColor, m, vProv, light);
@@ -106,12 +113,13 @@ extends DrawableHelper
 		}
 		vProv.draw();
 
-		return anchorY + totalHeight;
+		return anchorY + textureHeight + patch.paddingVertical;
 	}
 
+	private static int[] x=new int[4], y=new int[4];
 	public void	Draw9Patch(MatrixStack matrices, int originX, int originY, int totalW, int totalH, PatchInfo patch) {
-		int[] x = PatchInfo.GetPatchPositions(new int[4], originX, totalW, patch.patch.left(), patch.patch.right ());
-		int[] y = PatchInfo.GetPatchPositions(new int[4], originY, totalH, patch.patch.top (), patch.patch.bottom());
+		PatchInfo.GetPatchPositions(x, originX, totalW, patch.patch.left(), patch.patch.right ());
+		PatchInfo.GetPatchPositions(y, originY, totalH, patch.patch.top (), patch.patch.bottom());
 		float[] u = patch.u;
 		float[] v = patch.v;
 
