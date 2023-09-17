@@ -1,0 +1,21 @@
+{
+	"base" : {
+		"width":  87,
+		"height": 15
+	},
+	"ninepatch": {
+		"left":   3,
+		"top":    3,
+		"right":  3,
+		"bottom": 3
+	},
+	"padding": {
+		"bottom": 1
+	},
+	"textarea": {
+		"left":   3,
+		"top":    3,
+		"right":  3,
+		"bottom": 3
+	}
+}
