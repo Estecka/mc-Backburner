@@ -1,0 +1,10 @@
+{
+	"base": {
+		"width": 9,
+		"height": 9
+	},
+	"padding": {
+		"left": 2,
+		"top": 1
+	}
+}

@@ -3,7 +3,10 @@ package tk.estecka.backburner;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import tk.estecka.backburner.config.SimpleConfig;
 
@@ -22,5 +25,8 @@ public class Backburner implements ClientModInitializer
 		BacklogCommands.Register();
 		ClientPlayConnectionEvents.JOIN.register(new Identifier(MODID, "reload"), (handler, packet, client)->BacklogData.Reload());
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new PatchReloadListener());
+
+		var mod = FabricLoader.getInstance().getModContainer(MODID).get();
+		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "questlog"), mod, Text.literal("Final Questlog"), ResourcePackActivationType.DEFAULT_ENABLED);
 	}
 }
