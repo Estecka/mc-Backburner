@@ -1,13 +1,13 @@
 {
 	"base" : {
-		"width":  87,
-		"height": 15
+		"width":   7,
+		"height": 20
 	},
 	"ninepatch": {
-		"left":   3,
-		"top":    3,
-		"right":  3,
-		"bottom": 3
+		"left":    4,
+		"top":     2,
+		"right":   0,
+		"bottom":  2
 	},
 	"padding": {
 		"left":   2,
@@ -15,14 +15,14 @@
 		"bottom": 1
 	},
 	"textarea": {
-		"left":   3,
-		"top":    3,
-		"right":  3,
-		"bottom": 3
+		"left":   7,
+		"top":    2,
+		"right":  0,
+		"bottom": 2
 	},
 	"text": {
 		"colour":    "#ffffffff",
-		"outline":   "#bb0044bb",
-		"outerline": "#440088ff"
+		"outline":   "#dd0066bb",
+		"outerline": "#4444bbff"
 	}
 }
