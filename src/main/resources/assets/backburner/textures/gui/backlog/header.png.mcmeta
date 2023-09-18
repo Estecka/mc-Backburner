@@ -17,5 +17,9 @@
 		"top":    2,
 		"right":  9,
 		"bottom": 4
+	},
+	"text":{
+		"colour": "#ffffffbb",
+		"shadow": true
 	}
 }

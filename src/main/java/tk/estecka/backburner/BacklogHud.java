@@ -5,11 +5,13 @@ import java.util.Map;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import tk.estecka.backburner.mixin.IDrawableHelperMixin;
@@ -21,8 +23,7 @@ extends DrawableHelper
 	static private final Identifier ICON_ID   = new Identifier(Backburner.MODID, "textures/gui/backlog/icon.png"  );
 	static private final Identifier HEADER_ID = new Identifier(Backburner.MODID, "textures/gui/backlog/header.png");
 	static private final Identifier ITEM_ID   = new Identifier(Backburner.MODID, "textures/gui/backlog/item.png"  );
-
-	static private final Text HEADER_TITLE = Text.translatable("backburner.header.title");
+	static private final OrderedText HEADER_TITLE = Text.translatable("backburner.header.title").asOrderedText();
 
 	static public boolean isHidden = false;
 
@@ -53,7 +54,7 @@ extends DrawableHelper
 			return;
 		}
 		
-		y = DrawHeader(matrices, x, y, HEADER_TITLE.getString());
+		y = DrawHeader(matrices, x, y, HEADER_TITLE);
 
 		for (int i=0; i<items.size(); i++){
 			y = DrawItem(matrices, x, y, String.format("%d • %s", i, items.get(i)));
@@ -63,11 +64,11 @@ extends DrawableHelper
 	/**
 	 * @return The y coordinate of the element's bottom
 	 */
-	public int	DrawHeader(MatrixStack matrices, int anchorX, int anchorY, String title){
+	public int	DrawHeader(MatrixStack matrices, int anchorX, int anchorY, OrderedText text){
 		PatchInfo patch = patches.getOrDefault(HEADER_ID, PatchInfo.DEFAULT);
 		RenderSystem.setShaderTexture(0, HEADER_ID);
 		RenderSystem.enableBlend();
-		int width  = patch.minWidth  + textRenderer.getWidth(title);
+		int width  = patch.minWidth  + textRenderer.getWidth(text);
 		int height = patch.minHeight + textRenderer.fontHeight;
 
 		int imgX = anchorX + patch.padding.left();
@@ -76,7 +77,7 @@ extends DrawableHelper
 		int textY = imgY + patch.textY;
 
 		Draw9Patch(matrices, imgX, imgY, width, height, patch);
-		drawTextWithShadow(matrices, textRenderer, title, textX, textY, 0xffffffbb);
+		DrawStyledText(matrices, text, textX, textY, patch);
 		return anchorY + height + patch.paddingVertical;
 	}
 
@@ -100,20 +101,10 @@ extends DrawableHelper
 
 		Draw9Patch(matrices, imgX, imgY, imgWdt, textureHeight, patch);
 
-		var vProv = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-		var m = matrices.peek().getPositionMatrix();
-		int outerlineColor = 0x440088ff;
-		int outlineColor   = 0xbb0044bb;
-		int light = LightmapTextureManager.MAX_LIGHT_COORDINATE;
 		for (var l : lines){
-			textRenderer.drawWithOutline(l, textX-1, textY-1, outlineColor, outerlineColor, m, vProv, light);
-			textRenderer.drawWithOutline(l, textX-1, textY+1, outlineColor, outerlineColor, m, vProv, light);
-			textRenderer.drawWithOutline(l, textX+1, textY-1, outlineColor, outerlineColor, m, vProv, light);
-			textRenderer.drawWithOutline(l, textX+1, textY+1, outlineColor, outerlineColor, m, vProv, light);
-			textRenderer.drawWithOutline(l, textX, textY, 0xffffffff, outlineColor, m, vProv, light);
+			DrawStyledText(matrices, l, textX, textY, patch);
 			textY += textRenderer.fontHeight;
 		}
-		vProv.draw();
 
 		return anchorY + textureHeight + patch.paddingVertical;
 	}
@@ -145,5 +136,22 @@ extends DrawableHelper
 			// 	debugColor
 			// );
 		}
+	}
+
+	private void	DrawStyledText(MatrixStack matrices, OrderedText text, int x, int y, PatchInfo style){
+		var m = matrices.peek().getPositionMatrix();
+		int light = LightmapTextureManager.MAX_LIGHT_COORDINATE;
+		var vProv = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+
+		if (0 != (0xff000000 & style.outerlineColour)){
+			textRenderer.drawWithOutline(text, x-1, y-1, style.outlineColour, style.outerlineColour, m, vProv, light);
+			textRenderer.drawWithOutline(text, x-1, y+1, style.outlineColour, style.outerlineColour, m, vProv, light);
+			textRenderer.drawWithOutline(text, x+1, y-1, style.outlineColour, style.outerlineColour, m, vProv, light);
+			textRenderer.drawWithOutline(text, x+1, y+1, style.outlineColour, style.outerlineColour, m, vProv, light);
+		}
+		if (0 != (0xff000000 & style.outlineColour))
+			textRenderer.drawWithOutline(text, x, y, style.textColour, style.outlineColour, m, vProv, light);
+		textRenderer.draw(text, x, y, style.textColour, style.textShadow, m, vProv, TextLayerType.NORMAL, 0x0, light);
+		vProv.draw();
 	}
 }

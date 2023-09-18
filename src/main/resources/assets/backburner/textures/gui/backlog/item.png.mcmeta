@@ -19,5 +19,10 @@
 		"top":    3,
 		"right":  3,
 		"bottom": 3
+	},
+	"text": {
+		"colour":    "#ffffffff",
+		"outline":   "#bb0044bb",
+		"outerline": "#440088ff"
 	}
 }

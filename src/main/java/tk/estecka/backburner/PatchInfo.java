@@ -1,5 +1,9 @@
 package tk.estecka.backburner;
 
+import java.util.OptionalInt;
+import org.jetbrains.annotations.Nullable;
+import com.google.common.primitives.UnsignedInts;
+
 public class PatchInfo {
 	static public final PatchInfo DEFAULT = new PatchInfo(new PatchMeta());
 
@@ -9,7 +13,7 @@ public class PatchInfo {
 	public final int baseWidth, baseHeight;
 	public final PatchMeta.Margin padding;
 	/**
-	 * The total size of the paddng on each axis.
+	 * The total size of the padding on each axis.
 	 */
 	public final int paddingVertical, paddingHorizontal;
 	/**
@@ -26,6 +30,8 @@ public class PatchInfo {
 	 * Normalized between 0 and 1.
 	 */
 	public final float[] u, v;
+	public final int textColour, outlineColour, outerlineColour;
+	public final boolean textShadow;
 
 	public PatchInfo(PatchMeta mcmeta){
 		this.baseWidth  = mcmeta.base.width ();
@@ -49,6 +55,23 @@ public class PatchInfo {
 		for (int i=0; i<4; ++i){
 			u[i] = uInt[i] / (float)baseWidth;
 			v[i] = vInt[i] / (float)baseHeight;
+		}
+
+		this.textColour      = colourOf(mcmeta.text.colour())   .orElse(0xffffffff);
+		this.outlineColour   = colourOf(mcmeta.text.outline())  .orElse(0x0);
+		this.outerlineColour = colourOf(mcmeta.text.outerline()).orElse(0x0);
+		this.textShadow = mcmeta.text.shadow();
+	}
+
+	static private OptionalInt	colourOf(@Nullable String hex){
+		if (hex == null)
+			return OptionalInt.empty();
+		try {
+			return OptionalInt.of(UnsignedInts.parseUnsignedInt(hex.substring(1), 16));
+		}
+		catch (NumberFormatException e){
+			Backburner.LOGGER.error("Invalid color code: {}\n{}", hex, e);
+			return OptionalInt.empty();
 		}
 	}
 
