@@ -30,7 +30,11 @@ extends DrawableHelper
 	private final MinecraftClient client;
 	private final TextRenderer textRenderer;
 
-	static private final int maxWidth = 128;
+	static private final int maxWidth   = Backburner.CONFIG.getOrDefault("hud.width", 128);
+	static private final int originX    = Backburner.CONFIG.getOrDefault("hud.x", 9);
+	static private final int originY    = Backburner.CONFIG.getOrDefault("hud.y", 32);
+	static private final float guiScale = Backburner.CONFIG.getOrDefault("hud.scale", 1);
+
 	static private final int z = 0;
 
 	public BacklogHud(MinecraftClient client){
@@ -43,14 +47,18 @@ extends DrawableHelper
 		if (items == null || items.isEmpty())
 			return;
 
-		int x = 9;
-		int y = 32;
+		matrices.push();
+		matrices.scale(guiScale, guiScale, guiScale);
+
+		int x = originX;
+		int y = originY;
 
 		if (isHidden){
 			PatchInfo patch = patches.getOrDefault(ICON_ID, PatchInfo.DEFAULT);
 			RenderSystem.setShaderTexture(0, ICON_ID);
 			RenderSystem.enableBlend();
 			Draw9Patch(matrices, x+patch.padding.left(), y+patch.padding.top(), patch.baseWidth, patch.baseHeight, patch);
+			matrices.pop();
 			return;
 		}
 		
@@ -59,6 +67,8 @@ extends DrawableHelper
 		for (int i=0; i<items.size(); i++){
 			y = DrawItem(matrices, x, y, String.format("%d • %s", i, items.get(i)));
 		}
+
+		matrices.pop();
 	}
 
 	/**

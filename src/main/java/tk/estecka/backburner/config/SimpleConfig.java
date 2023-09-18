@@ -1,8 +1,8 @@
-package tk.estecka.mocan.config;
+package tk.estecka.backburner.config;
 
 /*
  * Source: https://github.com/magistermaks/fabric-simplelibs/blob/master/simple-config/SimpleConfig.java
- * Slightly modified by Estecka 2023
+ * Modified by Estecka 2023
  */
 
 /*
@@ -28,6 +28,8 @@ package tk.estecka.mocan.config;
  */
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,11 +39,12 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class SimpleConfig {
 
-	private static final Logger LOGGER = LogManager.getLogger("MoCan-SimpleConfig");
+	private static final Logger LOGGER = LogManager.getLogger("Backburner-SimpleConfig");
 	private final HashMap<String, String> config = new HashMap<>();
 	private final ConfigRequest request;
 	private boolean broken = false;
@@ -50,6 +53,23 @@ public class SimpleConfig {
 		String get( String namespace );
 
 		static String empty( String namespace ) {
+			return "";
+		}
+
+		static String fromFile(String modId, String filename){
+			Optional<ModContainer> mod = FabricLoader.getInstance().getModContainer(modId);
+			if (mod.isEmpty())
+				return "";
+
+			var path = mod.get().findPath("config/"+filename+".properties");
+			if (path.isPresent())
+			try {
+				return Files.readString(path.get());
+			}
+			catch (IOException e){
+				LOGGER.error("{}", e);
+			}
+	
 			return "";
 		}
 	}
@@ -105,6 +125,9 @@ public class SimpleConfig {
 	public static ConfigRequest of( String filename ) {
 		Path path = FabricLoader.getInstance().getConfigDir();
 		return new ConfigRequest( path.resolve( filename + ".properties" ).toFile(), filename );
+	}
+	public static ConfigRequest of( String modId, String filename ) {
+		return SimpleConfig.of(filename).provider(name->DefaultConfig.fromFile(modId, name));
 	}
 
 	private void createConfig() throws IOException {

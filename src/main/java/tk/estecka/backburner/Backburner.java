@@ -5,6 +5,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
+import tk.estecka.backburner.config.SimpleConfig;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +15,7 @@ public class Backburner implements ClientModInitializer
 {
 	static public final String MODID = "backburner";
 	static public final Logger LOGGER = LoggerFactory.getLogger("Back-burner");
+	static public final SimpleConfig CONFIG = SimpleConfig.of(MODID, MODID).request();
 
 	@Override
 	public void onInitializeClient() {
