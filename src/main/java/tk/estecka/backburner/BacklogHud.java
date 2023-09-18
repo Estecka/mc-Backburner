@@ -26,16 +26,14 @@ extends DrawableHelper
 	static private final OrderedText HEADER_TITLE = Text.translatable("backburner.header.title").asOrderedText();
 
 	static public boolean isHidden = false;
+	static private final int maxWidth = Backburner.CONFIG.getOrDefault("hud.width", 128);
+	static private final int originX  = Backburner.CONFIG.getOrDefault("hud.x", 9);
+	static private final int originY  = Backburner.CONFIG.getOrDefault("hud.y", 32);
+	static private final float scaleFactor = (float)Backburner.CONFIG.getOrDefault("hud.scale", 1.0);
+	static private final int z = 0;
 
 	private final MinecraftClient client;
 	private final TextRenderer textRenderer;
-
-	static private final int maxWidth   = Backburner.CONFIG.getOrDefault("hud.width", 128);
-	static private final int originX    = Backburner.CONFIG.getOrDefault("hud.x", 9);
-	static private final int originY    = Backburner.CONFIG.getOrDefault("hud.y", 32);
-	static private final float guiScale = Backburner.CONFIG.getOrDefault("hud.scale", 1);
-
-	static private final int z = 0;
 
 	public BacklogHud(MinecraftClient client){
 		this.client = client;
@@ -47,8 +45,13 @@ extends DrawableHelper
 		if (items == null || items.isEmpty())
 			return;
 
+		final int guiScale = (int)client.getWindow().getScaleFactor();
+		int effectiveScale = Math.round(guiScale * scaleFactor);
+		effectiveScale = Math.max(1, effectiveScale);
+		float effectiveMultiplier = effectiveScale / (float)guiScale;
+
 		matrices.push();
-		matrices.scale(guiScale, guiScale, guiScale);
+		matrices.scale(effectiveMultiplier, effectiveMultiplier, 1);
 
 		int x = originX;
 		int y = originY;
