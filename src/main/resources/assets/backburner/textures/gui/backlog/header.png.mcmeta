@@ -1,25 +1,25 @@
 {
 	"base" : {
-		"width":  83,
-		"height": 15
+		"width":  22,
+		"height": 14
 	},
 	"ninepatch": {
-		"left":  20,
-		"top":   10,
+		"left":  10,
+		"top":   11,
 		"right":  2,
-		"bottom": 4
+		"bottom": 2
 	},
 	"padding": {
 		"bottom": 2
 	},
 	"textarea": {
-		"left":  13,
-		"top":    2,
-		"right":  9,
-		"bottom": 4
+		"left":  11,
+		"top":    3,
+		"right":  2,
+		"bottom": 3
 	},
 	"text":{
-		"colour": "#ffffffbb",
+		"colour": "#ffffffff",
 		"shadow": true
 	}
 }
