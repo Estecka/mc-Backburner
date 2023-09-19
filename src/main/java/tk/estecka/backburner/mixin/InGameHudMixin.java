@@ -1,8 +1,8 @@
 package tk.estecka.backburner.mixin;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.util.math.MatrixStack;
 import tk.estecka.backburner.BacklogHud;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,9 +24,9 @@ public abstract class InGameHudMixin
 
 
 	@Inject( method="render", at=@At(value="INVOKE", target="net/minecraft/client/network/ClientPlayerInteractionManager.getCurrentGameMode ()Lnet/minecraft/world/GameMode;", ordinal=0) )
-	void	Render(MatrixStack matrices, float tickDelta, CallbackInfo info){
+	void	Render(DrawContext context, float tickDelta, CallbackInfo info){
 		if (!client.options.hudHidden){
-			this.backlogHud.Render(matrices, tickDelta);
+			this.backlogHud.Render(context, tickDelta);
 			RenderSystem.enableBlend();
 		}
 	}
