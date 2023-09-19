@@ -1,0 +1,25 @@
+{
+	"basis" : {
+		"width":  83,
+		"height": 15
+	},
+	"ninepatch": {
+		"left":  20,
+		"top":   10,
+		"right":  2,
+		"bottom": 4
+	},
+	"padding": {
+		"bottom": 2
+	},
+	"textarea": {
+		"left":  13,
+		"top":    2,
+		"right":  9,
+		"bottom": 4
+	},
+	"text":{
+		"colour": "#ffffffbb",
+		"shadow": true
+	}
+}

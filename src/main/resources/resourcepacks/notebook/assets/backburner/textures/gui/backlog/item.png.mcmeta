@@ -1,0 +1,26 @@
+{
+	"basis" : {
+		"width": 189,
+		"height": 36,
+		"fill": true
+	},
+	"ninepatch": {
+		"left":   19,
+		"top":    18,
+		"right":   6,
+		"bottom": 10
+	},
+	"padding": {
+		"left": 1,
+		"bottom": -9
+	},
+	"textarea": {
+		"left":  20,
+		"top":    9,
+		"right": 10,
+		"bottom": 9
+	},
+	"text": {
+		"colour": "#ff000088"
+	}
+}
