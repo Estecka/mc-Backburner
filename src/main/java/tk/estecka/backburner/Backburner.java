@@ -27,6 +27,7 @@ public class Backburner implements ClientModInitializer
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new PatchReloadListener());
 
 		var mod = FabricLoader.getInstance().getModContainer(MODID).get();
-		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "questlog"), mod, Text.literal("Final Questlog"), ResourcePackActivationType.DEFAULT_ENABLED);
+		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "notebook"), mod, Text.literal("Note-Book"     ), ResourcePackActivationType.NORMAL);
+		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "questlog"), mod, Text.literal("Final Questlog"), ResourcePackActivationType.NORMAL);
 	}
 }

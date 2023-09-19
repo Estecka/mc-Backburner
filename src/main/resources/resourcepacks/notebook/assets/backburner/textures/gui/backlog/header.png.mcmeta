@@ -1,0 +1,24 @@
+{
+	"base" : {
+		"width":  191,
+		"height":  19
+	},
+	"ninepatch": {
+		"left":  19,
+		"top":   19,
+		"right":  6,
+		"bottom": 0
+	},
+	"padding": {
+		"left": 1
+	},
+	"textarea": {
+		"left":  29,
+		"top":   10,
+		"right": 10,
+		"bottom": 0
+	},
+	"text":{
+		"colour": "#ff880000"
+	}
+}
