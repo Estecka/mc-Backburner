@@ -11,6 +11,11 @@ public class PatchInfo {
 	 * The base size of the texture.
 	 */
 	public final int baseWidth, baseHeight;
+	/**
+	 * Whether the GUI element should fill the available space, or fit to the
+	 * text content.
+	 */
+	public final boolean fill;
 	public final PatchMeta.Margin padding;
 	/**
 	 * The total size of the padding on each axis.
@@ -36,6 +41,7 @@ public class PatchInfo {
 	public PatchInfo(PatchMeta mcmeta){
 		this.baseWidth  = mcmeta.base.width ();
 		this.baseHeight = mcmeta.base.height();
+		this.fill = mcmeta.base.fill();
 
 		this.textX = mcmeta.textarea.left();
 		this.textY = mcmeta.textarea.top ();

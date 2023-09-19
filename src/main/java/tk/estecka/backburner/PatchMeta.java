@@ -8,12 +8,8 @@ import net.minecraft.resource.metadata.ResourceMetadataReader;
 
 public class PatchMeta 
 {
-	static public record Size(int width, int height) { 
-		public String toString() { return String.format("{%d,%d}", this.width, this.height); } 
-	}
-	static public record Margin(int left, int top, int right, int bottom) {
-		public String toString() { return String.format("[{%d,%d}, {%d,%d}]", this.left, this.top, this.right, this.bottom); }
-	}
+	static public record Size(int width, int height, boolean fill) {}
+	static public record Margin(int left, int top, int right, int bottom) {}
 	static public record Colour(String colour, String outline, String outerline, boolean shadow) {}
 
 	static private final Gson gson = new Gson();
@@ -24,7 +20,7 @@ public class PatchMeta
 	static public final ResourceMetadataReader<Colour> COLOUR_READER   = getReader(new TypeToken<Colour>(){}, "text"     );
 	static private final PatchMeta DEFAULT = new PatchMeta();
 
-	public Size	base = new Size(16, 16);
+	public Size	base = new Size(16, 16, false);
 	public Margin padding   = new Margin(0, 0, 0, 0);
 	public Margin ninepatch = new Margin(0, 0, 0, 0);
 	public Margin textarea  = new Margin(0, 0, 0, 0);

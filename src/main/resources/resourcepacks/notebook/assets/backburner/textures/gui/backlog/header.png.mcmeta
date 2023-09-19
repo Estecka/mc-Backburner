@@ -1,7 +1,8 @@
 {
 	"base" : {
 		"width":  191,
-		"height":  19
+		"height":  19,
+		"fill": true
 	},
 	"ninepatch": {
 		"left":  19,

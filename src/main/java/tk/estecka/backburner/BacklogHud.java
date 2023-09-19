@@ -11,7 +11,9 @@ import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
+import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import tk.estecka.backburner.mixin.IDrawableHelperMixin;
@@ -23,7 +25,7 @@ extends DrawableHelper
 	static private final Identifier ICON_ID   = new Identifier(Backburner.MODID, "textures/gui/backlog/icon.png"  );
 	static private final Identifier HEADER_ID = new Identifier(Backburner.MODID, "textures/gui/backlog/header.png");
 	static private final Identifier ITEM_ID   = new Identifier(Backburner.MODID, "textures/gui/backlog/item.png"  );
-	static private final OrderedText HEADER_TITLE = Text.translatable("backburner.header.title").asOrderedText();
+	static private final MutableText HEADER_TITLE = Text.translatable("backburner.header.title");
 
 	static public boolean isHidden = false;
 	static private final int maxWidth = Backburner.CONFIG.getOrDefault("hud.width", 128);
@@ -65,11 +67,10 @@ extends DrawableHelper
 			return;
 		}
 		
-		y = DrawHeader(matrices, x, y, HEADER_TITLE);
+		y = DrawTextBox( matrices, x, y, HEADER_ID, HEADER_TITLE );
 
-		for (int i=0; i<items.size(); i++){
-			y = DrawItem(matrices, x, y, String.format("%d • %s", i, items.get(i)));
-		}
+		for (int i=0; i<items.size(); i++)
+			y = DrawTextBox( matrices, x, y, ITEM_ID, Text.literal(String.format("%d • %s", i, items.get(i))) );
 
 		matrices.pop();
 	}
@@ -77,30 +78,8 @@ extends DrawableHelper
 	/**
 	 * @return The y coordinate of the element's bottom
 	 */
-	public int	DrawHeader(MatrixStack matrices, int anchorX, int anchorY, OrderedText text){
-		PatchInfo patch = patches.getOrDefault(HEADER_ID, PatchInfo.DEFAULT);
-		RenderSystem.setShaderTexture(0, HEADER_ID);
-		RenderSystem.enableBlend();
-		int width  = patch.minWidth  + textRenderer.getWidth(text);
-		int height = patch.minHeight + textRenderer.fontHeight;
-
-		int imgX = anchorX + patch.padding.left();
-		int imgY = anchorY + patch.padding.top ();
-		int textX = imgX + patch.textX;
-		int textY = imgY + patch.textY;
-
-		Draw9Patch(matrices, imgX, imgY, width, height, patch);
-		DrawStyledText(matrices, text, textX, textY, patch);
-		return anchorY + height + patch.paddingVertical;
-	}
-
-	/**
-	 * @return The y coordinate of the element's bottom
-	 */
-	public int	DrawItem(MatrixStack matrices, int anchorX, int anchorY, String text){
-		PatchInfo patch = patches.getOrDefault(ITEM_ID, PatchInfo.DEFAULT);
-		RenderSystem.setShaderTexture(0, ITEM_ID);
-		RenderSystem.enableBlend();
+	private int	DrawTextBox(MatrixStack matrices,int anchorX, int anchorY, Identifier sprite, StringVisitable text){
+		PatchInfo patch = patches.getOrDefault(sprite, PatchInfo.DEFAULT);
 
 		int imgX = anchorX + patch.padding.left();
 		int imgY = anchorY + patch.padding.top();
@@ -109,17 +88,26 @@ extends DrawableHelper
 
 		int imgWdt  = maxWidth - patch.paddingHorizontal;
 		int textWdt = imgWdt - patch.minWidth;
-		var lines = textRenderer.wrapLines(Text.literal(text), textWdt);
-		int textureHeight = patch.minHeight + (textRenderer.fontHeight * lines.size());
+		var lines = textRenderer.wrapLines(text, textWdt);
+		int imgHgt = patch.minHeight + (textRenderer.fontHeight * lines.size());
 
-		Draw9Patch(matrices, imgX, imgY, imgWdt, textureHeight, patch);
+		if (!patch.fill) {
+			textWdt = 0;
+			for (var l : lines)
+				textWdt = Math.max(textWdt, textRenderer.getWidth(l));
+			imgWdt = textWdt + patch.minWidth;
+		}
+
+		RenderSystem.setShaderTexture(0, sprite);
+		RenderSystem.enableBlend();
+		Draw9Patch(matrices, imgX, imgY, imgWdt, imgHgt, patch);
 
 		for (var l : lines){
 			DrawStyledText(matrices, l, textX, textY, patch);
 			textY += textRenderer.fontHeight;
 		}
 
-		return anchorY + textureHeight + patch.paddingVertical;
+		return anchorY + imgHgt + patch.paddingVertical;
 	}
 
 	private static int[] x=new int[4], y=new int[4];
