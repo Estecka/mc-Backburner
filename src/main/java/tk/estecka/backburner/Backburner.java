@@ -24,7 +24,7 @@ public class Backburner implements ClientModInitializer
 	public void onInitializeClient() {
 		BacklogCommands.Register();
 		ClientPlayConnectionEvents.JOIN.register(new Identifier(MODID, "reload"), (handler, packet, client)->BacklogData.Reload());
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new PatchReloadListener());
+		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new GuiSpriteReloadListener());
 
 		var mod = FabricLoader.getInstance().getModContainer(MODID).get();
 		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "notebook"), mod, Text.literal("Note-Book"     ), ResourcePackActivationType.NORMAL);

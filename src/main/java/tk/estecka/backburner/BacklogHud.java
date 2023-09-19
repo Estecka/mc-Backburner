@@ -21,7 +21,7 @@ import tk.estecka.backburner.mixin.IDrawableHelperMixin;
 public class BacklogHud 
 extends DrawableHelper
 {
-	static public final Map<Identifier,PatchInfo> patches = new HashMap<Identifier,PatchInfo>();
+	static public final Map<Identifier,GuiSpriteInfo> sprites = new HashMap<Identifier,GuiSpriteInfo>();
 	static private final Identifier ICON_ID   = new Identifier(Backburner.MODID, "textures/gui/backlog/icon.png"  );
 	static private final Identifier HEADER_ID = new Identifier(Backburner.MODID, "textures/gui/backlog/header.png");
 	static private final Identifier ITEM_ID   = new Identifier(Backburner.MODID, "textures/gui/backlog/item.png"  );
@@ -59,7 +59,7 @@ extends DrawableHelper
 		int y = originY;
 
 		if (isHidden){
-			PatchInfo patch = patches.getOrDefault(ICON_ID, PatchInfo.DEFAULT);
+			GuiSpriteInfo patch = sprites.getOrDefault(ICON_ID, GuiSpriteInfo.DEFAULT);
 			RenderSystem.setShaderTexture(0, ICON_ID);
 			RenderSystem.enableBlend();
 			Draw9Patch(matrices, x+patch.padding.left(), y+patch.padding.top(), patch.baseWidth, patch.baseHeight, patch);
@@ -79,7 +79,7 @@ extends DrawableHelper
 	 * @return The y coordinate of the element's bottom
 	 */
 	private int	DrawTextBox(MatrixStack matrices,int anchorX, int anchorY, Identifier sprite, StringVisitable text){
-		PatchInfo patch = patches.getOrDefault(sprite, PatchInfo.DEFAULT);
+		GuiSpriteInfo patch = sprites.getOrDefault(sprite, GuiSpriteInfo.DEFAULT);
 
 		int imgX = anchorX + patch.padding.left();
 		int imgY = anchorY + patch.padding.top();
@@ -111,9 +111,9 @@ extends DrawableHelper
 	}
 
 	private static int[] x=new int[4], y=new int[4];
-	public void	Draw9Patch(MatrixStack matrices, int originX, int originY, int totalW, int totalH, PatchInfo patch) {
-		PatchInfo.GetPatchPositions(x, originX, totalW, patch.patch.left(), patch.patch.right ());
-		PatchInfo.GetPatchPositions(y, originY, totalH, patch.patch.top (), patch.patch.bottom());
+	public void	Draw9Patch(MatrixStack matrices, int originX, int originY, int totalW, int totalH, GuiSpriteInfo patch) {
+		GuiSpriteInfo.GetPatchPositions(x, originX, totalW, patch.patch.left(), patch.patch.right ());
+		GuiSpriteInfo.GetPatchPositions(y, originY, totalH, patch.patch.top (), patch.patch.bottom());
 		float[] u = patch.u;
 		float[] v = patch.v;
 
@@ -139,7 +139,7 @@ extends DrawableHelper
 		}
 	}
 
-	private void	DrawStyledText(MatrixStack matrices, OrderedText text, int x, int y, PatchInfo style){
+	private void	DrawStyledText(MatrixStack matrices, OrderedText text, int x, int y, GuiSpriteInfo style){
 		var m = matrices.peek().getPositionMatrix();
 		int light = LightmapTextureManager.MAX_LIGHT_COORDINATE;
 		var vProv = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());

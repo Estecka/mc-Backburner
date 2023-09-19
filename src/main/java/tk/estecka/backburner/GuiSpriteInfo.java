@@ -4,8 +4,8 @@ import java.util.OptionalInt;
 import org.jetbrains.annotations.Nullable;
 import com.google.common.primitives.UnsignedInts;
 
-public class PatchInfo {
-	static public final PatchInfo DEFAULT = new PatchInfo(new PatchMeta());
+public class GuiSpriteInfo {
+	static public final GuiSpriteInfo DEFAULT = new GuiSpriteInfo(new GuiSpriteMeta());
 
 	/**
 	 * The base size of the texture.
@@ -16,7 +16,7 @@ public class PatchInfo {
 	 * text content.
 	 */
 	public final boolean fill;
-	public final PatchMeta.Margin padding;
+	public final GuiSpriteMeta.Margin padding;
 	/**
 	 * The total size of the padding on each axis.
 	 */
@@ -29,19 +29,22 @@ public class PatchInfo {
 	 * The position of the textArea, from the GUI element's origin.
 	 */
 	public final int textX, textY;
-	public final PatchMeta.Margin patch;
 	/**
-	 * The four positions of the patch's slices on the texture.
-	 * Normalized between 0 and 1.
+	 * The borders of the texture's nine-patch.
+	 */
+	public final GuiSpriteMeta.Margin patch;
+	/**
+	 * The four positions of the patch's slices on the texture, normalized
+	 * between 0 and 1.
 	 */
 	public final float[] u, v;
 	public final int textColour, outlineColour, outerlineColour;
 	public final boolean textShadow;
 
-	public PatchInfo(PatchMeta mcmeta){
-		this.baseWidth  = mcmeta.base.width ();
-		this.baseHeight = mcmeta.base.height();
-		this.fill = mcmeta.base.fill();
+	public GuiSpriteInfo(GuiSpriteMeta mcmeta){
+		this.baseWidth  = mcmeta.basis.width ();
+		this.baseHeight = mcmeta.basis.height();
+		this.fill = mcmeta.basis.fill();
 
 		this.textX = mcmeta.textarea.left();
 		this.textY = mcmeta.textarea.top ();

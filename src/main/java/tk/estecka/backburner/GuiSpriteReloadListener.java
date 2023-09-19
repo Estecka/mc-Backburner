@@ -7,7 +7,7 @@ import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
-public class PatchReloadListener 
+public class GuiSpriteReloadListener 
 implements SimpleSynchronousResourceReloadListener
 {
 	public Identifier	getFabricId(){
@@ -21,13 +21,13 @@ implements SimpleSynchronousResourceReloadListener
 	}
 
 	public void	reload(ResourceManager manager){
-		BacklogHud.patches.clear();
-		for (Entry<Identifier, Resource> entry : manager.findResources("textures/gui/backlog", PatchReloadListener::AcceptsFile).entrySet()){
+		BacklogHud.sprites.clear();
+		for (Entry<Identifier, Resource> entry : manager.findResources("textures/gui/backlog", GuiSpriteReloadListener::AcceptsFile).entrySet()){
 			Identifier id = entry.getKey();
 			try {
-				PatchMeta mcmeta = PatchMeta.Decode(entry.getValue().getMetadata());
+				GuiSpriteMeta mcmeta = GuiSpriteMeta.Decode(entry.getValue().getMetadata());
 				// Backburner.LOGGER.warn("{} {}", id, mcmeta);
-				BacklogHud.patches.put(id, new PatchInfo(mcmeta));
+				BacklogHud.sprites.put(id, new GuiSpriteInfo(mcmeta));
 			} catch (IOException e) {
 				Backburner.LOGGER.error("{} : {}", id, e);
 			}
