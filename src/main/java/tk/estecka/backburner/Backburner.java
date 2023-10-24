@@ -8,6 +8,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import tk.estecka.backburner.config.Config;
 import tk.estecka.backburner.config.SimpleConfig;
 
 import org.slf4j.Logger;
@@ -19,6 +20,11 @@ public class Backburner implements ClientModInitializer
 	static public final String MODID = "backburner";
 	static public final Logger LOGGER = LoggerFactory.getLogger("Back-burner");
 	static public final SimpleConfig CONFIG = SimpleConfig.of(MODID, MODID).request();
+
+	static public Config GetConfig(){
+		// dummy implementation
+		return new Config();
+	}
 
 	@Override
 	public void onInitializeClient() {
