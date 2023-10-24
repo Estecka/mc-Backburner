@@ -18,48 +18,49 @@ implements ModMenuApi
 			final var builder = ConfigBuilder.create().setParentScreen(parent).setTitle(Text.literal("Backburner"));
 			final var entries = builder.entryBuilder();
 
-			final var HUD = builder.getOrCreateCategory(Text.literal("HUD"));
-			final var CMD = builder.getOrCreateCategory(Text.literal("Command"));
+			final var HUD = builder.getOrCreateCategory(Text.translatable("backburner.config.category.hud"));
+			final var CMD = builder.getOrCreateCategory(Text.translatable("backburner.config.category.command"));
+
 
 			CMD.addEntry(
-				entries.startStrField(Text.literal("Root command"), CONFIG.rootCommand)
+				entries.startStrField(Text.translatable("backburner.config.commandRoot").append("*"), CONFIG.rootCommand)
 					.setSaveConsumer(v -> CONFIG.rootCommand = v)
 					.setDefaultValue(defaultConfig.rootCommand)
-					.setTooltip(Text.literal("Requires restart to take effect"))
+					.setTooltip(Text.translatable("backburner.config.commandRoot.tooltip"))
 					.build()
 			);
 
 
 			HUD.addEntry(
-				entries.startIntField(Text.literal("Position X"), CONFIG.hudX)
+				entries.startIntField(Text.translatable("backburner.config.hudX"), CONFIG.hudX)
 					.setSaveConsumer(v -> CONFIG.hudX = v)
 					.setDefaultValue(defaultConfig.hudX)
 					.build()
 			);
 			HUD.addEntry(
-				entries.startIntField(Text.literal("Position Y"), CONFIG.hudY)
+				entries.startIntField(Text.translatable("backburner.config.hudY"), CONFIG.hudY)
 					.setSaveConsumer(v -> CONFIG.hudY = v)
 					.setDefaultValue(defaultConfig.hudY)
 					.build()
 			);
 			HUD.addEntry(
-				entries.startIntField(Text.literal("Base Width"), CONFIG.hudWdt)
+				entries.startIntField(Text.translatable("backburner.config.hudWidth"), CONFIG.hudWdt)
 					.setSaveConsumer(v -> CONFIG.hudWdt = v)
 					.setDefaultValue(defaultConfig.hudWdt)
 					.build()
 			);
 			HUD.addEntry(
-				entries.startFloatField(Text.literal("HUD Scale Multiplier"), CONFIG.hudScale)
+				entries.startFloatField(Text.translatable("backburner.config.hudScale"), CONFIG.hudScale)
 					.setSaveConsumer(v -> CONFIG.hudScale = v)
 					.setDefaultValue(defaultConfig.hudScale)
-					.setTooltip(Text.literal("Scales the backlog's GUI Scale vanilla."))
+					.setTooltip(Text.translatable("backburner.config.hudScale.tooltip"))
 					.build()
 			);
 			HUD.addEntry(
-				entries.startBooleanToggle(Text.literal("Allow fractional GUI Scale"), CONFIG.allowFractional)
+				entries.startBooleanToggle(Text.translatable("backburner.config.hudScale.fractional"), CONFIG.allowFractional)
 					.setSaveConsumer(v -> CONFIG.allowFractional = v)
 					.setDefaultValue(defaultConfig.allowFractional)
-					.setTooltip(Text.literal("Requires restart to take effect"))
+					.setTooltip(Text.translatable("backburner.config.hudScale.fractional.tooltip"))
 					.build()
 			);
 

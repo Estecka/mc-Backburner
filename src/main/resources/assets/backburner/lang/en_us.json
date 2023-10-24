@@ -1,3 +1,14 @@
 {
-	"backburner.header.title": "Backlog"
+	"backburner.header.title": "Backlog",
+	"backburner.config.category.hud": "HUD",
+	"backburner.config.category.command": "Command",
+	"backburner.config.commandRoot": "Root Command",
+	"backburner.config.commandRoot.tooltip": "THIS REQUIRES A RESTART TO TAKE EFFECT",
+	"backburner.config.hudX": "Position X",
+	"backburner.config.hudY": "PositionY",
+	"backburner.config.hudWidth": "Base Width",
+	"backburner.config.hudScale": "GUI Scale Multiplier",
+	"backburner.config.hudScale.tooltip": "Scales the backlog's GUI Scale in relation to the vanilla HUD",
+	"backburner.config.hudScale.fractional": "Allow Fractional GUI Scale",
+	"backburner.config.hudScale.fractional.tooltip": "When disabled, the effective GUI Scale will be snapped to the closest integer.\nFractional scales may not look good without other mods such as \"Advanced UI Scale\""
 }
