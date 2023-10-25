@@ -15,6 +15,8 @@ For multiplayer, they are saved under `.minecraft/remote_backlogs/`, using the i
 ## Config File
 
 The file `.minecraft/config/backburner.properties` let's you tweak the position and size of the backlog on screen.
+Everything can be edited in-game by using **Cloth-Config** and **ModMenu**.
+
 - `hud.x` and `hud.y` controls its position, relative to the top left corner of the screen.
 - `hud.width` controls its base size, i.e the amount of text it can hold before wrapping.
 - `hud.scale` is a multiplier, that downscales or upscales the backlog in relation to the game's global GUI-scale. Mostly relevant to players who use a large GUI-scale, and thus have room for downscaling.
@@ -56,7 +58,7 @@ In addition to textures, resource packs can alter some minor aspects of the back
 - `basis`: { `width`, `height` } indicates the base size of the element on screen.  
 For 16x-packs, this is strictly equal to the texture's size. For 32x-packs, this is half the texture's size. So on, so forth.
 - `basis`: { `fill` } (_boolean_) sets whether the element should take as much horizontal space as allowed (true) or shrink to fit the text (false).
-- `ninepatch`: { `top`, `bottom`, `left`, `right` }
+- `ninepatch`: { `top`, `bottom`, `left`, `right` } The margins of the sprite's  9-patch. I.e, the areas that won't be stretched to fit element's size.
 - `padding`: { `top`, `bottom`, `left`, `right` } Defines some space that will be added around the element. Negative values can be used to  remove space, and make elements overlap.
 - `textarea`: { `top`, `bottom`, `left`, `right` } defines margins inside the texture, which will not be filled with text.
 - `text`: {...} defines the different colours of the text for that element, formatted as a `#aarrggbb` hex codes. The alpha component is mandatory.

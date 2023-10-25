@@ -15,6 +15,9 @@
 	"icon": "assets/backburner/icon.png",
 	"environment": "*",
 	"entrypoints": {
+		"modmenu": [
+			"tk.estecka.backburner.config.ModMenu"
+		],
 		"client": [
 			"tk.estecka.backburner.Backburner"
 		]
@@ -29,6 +32,8 @@
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"another-mod": "*"
+		"advanced-ui-scale": "*",
+		"cloth-config": "*",
+		"modmenu": "*"
 	}
 }
