@@ -15,6 +15,8 @@ For multiplayer, they are saved under `.minecraft/remote_backlogs/`, using the i
 ## Config File
 
 The file `.minecraft/config/backburner.properties` let's you tweak the position and size of the backlog on screen.
+Everything can be edited in-game by using **Cloth-Config** and **ModMenu**.
+
 - `hud.x` and `hud.y` controls its position, relative to the top left corner of the screen.
 - `hud.width` controls its base size, i.e the amount of text it can hold before wrapping.
 - `hud.scale` is a multiplier, that downscales or upscales the backlog in relation to the game's global GUI-scale. Mostly relevant to players who use a large GUI-scale, and thus have room for downscaling.

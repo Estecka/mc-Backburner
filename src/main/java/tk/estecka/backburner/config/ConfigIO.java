@@ -35,10 +35,15 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ConfigIO
 {
+	static private final Logger LOGGER = LoggerFactory.getLogger("ConfigIO");
+
+	public boolean failHardonRead = true;
 	private final File file;
 
 	public ConfigIO(File file){
@@ -78,11 +83,22 @@ public class ConfigIO
 		if (!this.file.exists())
 			this.Write(config);
 		else {
-			var properties = ReadFile(this.file);
+			var properties = ReadFile(this.file, this.failHardonRead);
 			var codec = config.GetProperties();
 			for (var key : codec.keySet())
-				if (properties.containsKey(key))
-					codec.get(key).Decode(properties.get(key));
+			if  (properties.containsKey(key)) {
+				String value = properties.get(key);
+				try {
+					codec.get(key).Decode(value);
+				}
+				catch (IllegalArgumentException e){
+					String msg = String.format("Invalid value for \"%s\": \"%s\"\nin file %s", key, value, this.file.toString());
+					if (failHardonRead)
+						throw new IllegalArgumentException(msg, e);
+					else
+						LOGGER.error(msg);
+				}
+			}
 		}
 	}
 
@@ -97,7 +113,7 @@ public class ConfigIO
 		WriteFile(this.file, properties);
 	}
 
-	static public Map<String, String>	ReadFile(File file)
+	static public Map<String, String>	ReadFile(File file, boolean failHard)
 	throws IOException
 	{
 		var properties = new HashMap<String, String>();
@@ -108,8 +124,13 @@ public class ConfigIO
 				int split = line.indexOf('=');
 				if (line.isEmpty() || line.startsWith("#"))
 					continue;
-				else if (split < 0 || line.length() <= split+1)
-					throw new RuntimeException(String.format("Missing value at line %d", lineNo));
+				else if (split < 0 || line.length() <= split+1){
+					String msg = String.format("Missing value at line %d\n in file %s", lineNo, file.toString());
+					if (failHard)
+						throw new IllegalArgumentException(msg);
+					else
+						LOGGER.error(msg);
+				}
 				else {
 					properties.put(
 						line.substring(0, split),
@@ -119,7 +140,10 @@ public class ConfigIO
 			}
 		}
 		catch (IOException e){
-			throw e;
+			if (failHard)
+				throw e;
+			else
+				LOGGER.error("{}", e);
 		}
 		return properties;
 	}

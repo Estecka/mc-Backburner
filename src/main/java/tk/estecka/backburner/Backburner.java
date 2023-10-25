@@ -26,10 +26,11 @@ public class Backburner implements ClientModInitializer
 	@Override
 	public void onInitializeClient() {
 		try {
+			CONFIG_IO.failHardonRead = false;
 			CONFIG_IO.GetOrCreate(CONFIG);
 		}
 		catch (IOException e){
-			throw new Error(e);
+			LOGGER.error("{}", e);
 		}
 
 		BacklogCommands.Register();

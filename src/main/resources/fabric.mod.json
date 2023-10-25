@@ -32,6 +32,7 @@
 		"fabric-api": "*"
 	},
 	"suggests": {
+		"advanced-ui-scale": "*",
 		"cloth-config": "*",
 		"modmenu": "*"
 	}
