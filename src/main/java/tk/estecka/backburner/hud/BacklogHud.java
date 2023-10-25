@@ -1,4 +1,4 @@
-package tk.estecka.backburner;
+package tk.estecka.backburner.hud;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +16,8 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import tk.estecka.backburner.Backburner;
+import tk.estecka.backburner.BacklogData;
 import tk.estecka.backburner.mixin.IDrawableHelperMixin;
 
 import static tk.estecka.backburner.Backburner.CONFIG;

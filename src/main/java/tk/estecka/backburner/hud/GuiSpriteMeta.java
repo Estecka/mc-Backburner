@@ -1,4 +1,4 @@
-package tk.estecka.backburner;
+package tk.estecka.backburner.hud;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

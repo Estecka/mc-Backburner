@@ -10,6 +10,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import tk.estecka.backburner.config.Config;
 import tk.estecka.backburner.config.ConfigIO;
+import tk.estecka.backburner.hud.GuiSpriteReloadListener;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

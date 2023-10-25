@@ -1,8 +1,9 @@
-package tk.estecka.backburner;
+package tk.estecka.backburner.hud;
 
 import java.util.OptionalInt;
 import org.jetbrains.annotations.Nullable;
 import com.google.common.primitives.UnsignedInts;
+import tk.estecka.backburner.Backburner;
 
 public class GuiSpriteInfo {
 	static public final GuiSpriteInfo DEFAULT = new GuiSpriteInfo(new GuiSpriteMeta());

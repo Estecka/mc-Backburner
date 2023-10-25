@@ -1,4 +1,4 @@
-package tk.estecka.backburner;
+package tk.estecka.backburner.hud;
 
 import java.io.IOException;
 import java.util.Map.Entry;
@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import tk.estecka.backburner.Backburner;
 
 public class GuiSpriteReloadListener 
 implements SimpleSynchronousResourceReloadListener
