@@ -58,7 +58,7 @@ In addition to textures, resource packs can alter some minor aspects of the back
 - `basis`: { `width`, `height` } indicates the base size of the element on screen.  
 For 16x-packs, this is strictly equal to the texture's size. For 32x-packs, this is half the texture's size. So on, so forth.
 - `basis`: { `fill` } (_boolean_) sets whether the element should take as much horizontal space as allowed (true) or shrink to fit the text (false).
-- `ninepatch`: { `top`, `bottom`, `left`, `right` }
+- `ninepatch`: { `top`, `bottom`, `left`, `right` } The margins of the sprite's  9-patch. I.e, the areas that won't be stretched to fit element's size.
 - `padding`: { `top`, `bottom`, `left`, `right` } Defines some space that will be added around the element. Negative values can be used to  remove space, and make elements overlap.
 - `textarea`: { `top`, `bottom`, `left`, `right` } defines margins inside the texture, which will not be filled with text.
 - `text`: {...} defines the different colours of the text for that element, formatted as a `#aarrggbb` hex codes. The alpha component is mandatory.

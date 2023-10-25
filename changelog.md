@@ -21,3 +21,5 @@
 
 ## 1.3.0
 - Added Cloth-Config screen with ModMenu integration
+- Added an option to allow fractional GUI Scales
+- Excluded image sources from the jar, dramatically reducing file size.

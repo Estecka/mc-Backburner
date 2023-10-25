@@ -5,7 +5,7 @@
 	"backburner.config.commandRoot": "Root Command",
 	"backburner.config.commandRoot.tooltip": "THIS REQUIRES A RESTART TO TAKE EFFECT",
 	"backburner.config.hudX": "Position X",
-	"backburner.config.hudY": "PositionY",
+	"backburner.config.hudY": "Position Y",
 	"backburner.config.hudWidth": "Base Width",
 	"backburner.config.hudScale": "GUI Scale Multiplier",
 	"backburner.config.hudScale.tooltip": "Scales the backlog's GUI Scale in relation to the vanilla HUD",
