@@ -20,4 +20,4 @@
 - Fixed the "incompatible" warning on built-in resource packs in 1.20.2
 
 ## 1.3.0
-Added Cloth-Config screen with ModMenu integration
+- Added Cloth-Config screen with ModMenu integration
