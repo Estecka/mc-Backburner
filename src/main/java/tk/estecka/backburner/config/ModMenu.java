@@ -2,9 +2,11 @@ package tk.estecka.backburner.config;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
+import java.io.IOException;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import net.minecraft.text.Text;
 import tk.estecka.backburner.Backburner;
+import static tk.estecka.backburner.Backburner.CONFIG;
 
 public class ModMenu
 implements ModMenuApi
@@ -14,7 +16,6 @@ implements ModMenuApi
 	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory(){
 		return parent -> {
-			final Config CONFIG = Backburner.GetConfig();
 			final var builder = ConfigBuilder.create().setParentScreen(parent).setTitle(Text.literal("Backburner"));
 			final var entries = builder.entryBuilder();
 
@@ -64,6 +65,14 @@ implements ModMenuApi
 					.build()
 			);
 
+			builder.setSavingRunnable(()->{
+				try {
+					Backburner.CONFIG_IO.Write(CONFIG);
+				}
+				catch (IOException e) {
+					Backburner.LOGGER.error("Unable to save config: {}", e);
+				}
+			});
 
 			return builder.build();
 		};

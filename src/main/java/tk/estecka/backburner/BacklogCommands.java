@@ -27,7 +27,7 @@ public class BacklogCommands
 {
 	static public final Identifier ID = new Identifier("backburner", "stack");
 
-	static public final String ROOT_COMMAND = Backburner.CONFIG.getOrDefault("command.root", "note");
+	static public final String ROOT_COMMAND = Backburner.CONFIG.rootCommand;
 	static public final String BOOL_ARG  = "bool";
 	static public final String INDEX_ARG = "index";
 	static public final String OFFSET_ARG = "offset";
