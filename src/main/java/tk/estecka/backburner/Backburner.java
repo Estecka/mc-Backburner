@@ -8,8 +8,10 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import tk.estecka.backburner.config.SimpleConfig;
-
+import tk.estecka.backburner.config.Config;
+import tk.estecka.backburner.config.ConfigIO;
+import tk.estecka.backburner.hud.GuiSpriteReloadListener;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,10 +20,20 @@ public class Backburner implements ClientModInitializer
 {
 	static public final String MODID = "backburner";
 	static public final Logger LOGGER = LoggerFactory.getLogger("Back-burner");
-	static public final SimpleConfig CONFIG = SimpleConfig.of(MODID, MODID).request();
+
+	static public final ConfigIO CONFIG_IO = new ConfigIO(MODID+".properties");
+	static public final Config CONFIG = new Config();
 
 	@Override
 	public void onInitializeClient() {
+		try {
+			CONFIG_IO.failHardonRead = false;
+			CONFIG_IO.GetOrCreate(CONFIG);
+		}
+		catch (IOException e){
+			LOGGER.error("{}", e);
+		}
+
 		BacklogCommands.Register();
 		ClientPlayConnectionEvents.JOIN.register(new Identifier(MODID, "reload"), (handler, packet, client)->BacklogData.Reload());
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new GuiSpriteReloadListener());

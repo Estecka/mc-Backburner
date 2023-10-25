@@ -13,8 +13,9 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import tk.estecka.backburner.hud.BacklogHud;
 import java.util.concurrent.CompletableFuture;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static com.mojang.brigadier.arguments.BoolArgumentType.bool;
 import static com.mojang.brigadier.arguments.BoolArgumentType.getBool;
@@ -27,7 +28,7 @@ public class BacklogCommands
 {
 	static public final Identifier ID = new Identifier("backburner", "stack");
 
-	static public final String ROOT_COMMAND = Backburner.CONFIG.getOrDefault("command.root", "note");
+	static public final String ROOT_COMMAND = Backburner.CONFIG.rootCommand;
 	static public final String BOOL_ARG  = "bool";
 	static public final String INDEX_ARG = "index";
 	static public final String OFFSET_ARG = "offset";

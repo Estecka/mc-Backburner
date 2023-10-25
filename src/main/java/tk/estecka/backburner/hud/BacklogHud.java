@@ -1,4 +1,4 @@
-package tk.estecka.backburner;
+package tk.estecka.backburner.hud;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +16,11 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import tk.estecka.backburner.Backburner;
+import tk.estecka.backburner.BacklogData;
 import tk.estecka.backburner.mixin.IDrawableHelperMixin;
+
+import static tk.estecka.backburner.Backburner.CONFIG;
 
 public class BacklogHud 
 extends DrawableHelper
@@ -28,10 +32,6 @@ extends DrawableHelper
 	static private final MutableText HEADER_TITLE = Text.translatable("backburner.header.title");
 
 	static public boolean isHidden = false;
-	static private final int maxWidth = Backburner.CONFIG.getOrDefault("hud.width", 128);
-	static private final int originX  = Backburner.CONFIG.getOrDefault("hud.x", 9);
-	static private final int originY  = Backburner.CONFIG.getOrDefault("hud.y", 32);
-	static private final float scaleFactor = (float)Backburner.CONFIG.getOrDefault("hud.scale", 1.0);
 	static private final int z = 0;
 
 	private final MinecraftClient client;
@@ -48,15 +48,16 @@ extends DrawableHelper
 			return;
 
 		final int guiScale = (int)client.getWindow().getScaleFactor();
-		int effectiveScale = Math.round(guiScale * scaleFactor);
-		effectiveScale = Math.max(1, effectiveScale);
-		float effectiveMultiplier = effectiveScale / (float)guiScale;
+		float effectiveScale = guiScale * CONFIG.hudScale;
+		if (!CONFIG.allowFractional)
+			effectiveScale = Math.max(1, Math.round(effectiveScale));
 
+		float effectiveMultiplier = effectiveScale / (float)guiScale;
 		matrices.push();
 		matrices.scale(effectiveMultiplier, effectiveMultiplier, 1);
 
-		int x = originX;
-		int y = originY;
+		int x = CONFIG.hudX;
+		int y = CONFIG.hudY;
 
 		if (isHidden){
 			GuiSpriteInfo patch = sprites.getOrDefault(ICON_ID, GuiSpriteInfo.DEFAULT);
@@ -86,7 +87,7 @@ extends DrawableHelper
 		int textX = imgX + patch.textX;
 		int textY = imgY + patch.textY;
 
-		int imgWdt  = maxWidth - patch.paddingHorizontal;
+		int imgWdt  = CONFIG.hudWdt - patch.paddingHorizontal;
 		int textWdt = imgWdt - patch.minWidth;
 		var lines = textRenderer.wrapLines(text, textWdt);
 		int imgHgt = patch.minHeight + (textRenderer.fontHeight * lines.size());
