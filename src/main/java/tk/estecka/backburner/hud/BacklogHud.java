@@ -119,6 +119,7 @@ extends DrawableHelper
 		float[] u = patch.u;
 		float[] v = patch.v;
 
+		RenderSystem.enableBlend();
 		for (int tileX=0; tileX<3; ++tileX)
 		for (int tileY=0; tileY<3; ++tileY)
 		if  (x[tileX]<x[tileX+1] && y[tileY]<y[tileY+1])
