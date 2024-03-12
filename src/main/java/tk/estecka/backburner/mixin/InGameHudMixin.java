@@ -21,7 +21,7 @@ public abstract class InGameHudMixin
 
 
 	@Inject( method="render", at=@At(value="INVOKE", target="net/minecraft/client/network/ClientPlayerInteractionManager.getCurrentGameMode ()Lnet/minecraft/world/GameMode;", ordinal=0) )
-	void	backburner$Render(MatrixStack matrices, float tickDelta, CallbackInfo info){
+	private void	RenderHud(MatrixStack matrices, float tickDelta, CallbackInfo info){
 		if (!client.options.hudHidden){
 			this.backlogHud.Render(matrices, tickDelta);
 			RenderSystem.enableBlend();

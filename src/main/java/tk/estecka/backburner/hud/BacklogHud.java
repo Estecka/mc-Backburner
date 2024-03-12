@@ -1,6 +1,7 @@
 package tk.estecka.backburner.hud;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
@@ -43,8 +44,8 @@ extends DrawableHelper
 	}
 
 	public void	Render(MatrixStack matrices, float tickDelta){
-		final var items = BacklogData.instance.content;
-		if (items == null || items.isEmpty())
+		final List<String> items;
+		if (BacklogData.instance==null || (items=BacklogData.instance.content) == null || items.isEmpty())
 			return;
 
 		final int guiScale = (int)client.getWindow().getScaleFactor();
@@ -118,6 +119,7 @@ extends DrawableHelper
 		float[] u = patch.u;
 		float[] v = patch.v;
 
+		RenderSystem.enableBlend();
 		for (int tileX=0; tileX<3; ++tileX)
 		for (int tileY=0; tileY<3; ++tileY)
 		if  (x[tileX]<x[tileX+1] && y[tileY]<y[tileY+1])
