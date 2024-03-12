@@ -24,4 +24,6 @@
 - Added an option to allow fractional GUI Scales
 - Excluded image sources from the jar, dramatically reducing file size.
 ### 1.3.1
-- Fixed some crash and errors that could occur during ReplayMod's replays.
+- Fixed the "incompatible" warning on built-in resource packs in 1.20.3
+### 1.3.2
+- Fixed a crash that could occur upon loading a replay in ReplayMod.
