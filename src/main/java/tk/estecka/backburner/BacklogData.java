@@ -45,15 +45,19 @@ public class BacklogData
 	static public boolean	Reload(){
 		final var client = MinecraftClient.getInstance();
 		final var info = client.getCurrentServerEntry();
+		final var local = client.getServer();
 		Path savePath;
 
-		if (info == null) {
-			IntegratedServer local = client.getServer();
+		if (local != null) {
 			savePath = local.getSavePath(WorldSavePath.ROOT).resolve("backlog.json");
 		}
-		else {
+		else if (info != null) {
 			String address = info.address.replace(':', ' ');
 			savePath = client.runDirectory.toPath().resolve("remote_backlogs/"+address+".json");
+		}
+		else {
+			Backburner.LOGGER.error("Unable to find backburner's backlog save path. You can ignore this error if it occured during a Replay.");
+			return false;
 		}
 
 		Backburner.LOGGER.info("Backlog will be saved in: {}", savePath);
