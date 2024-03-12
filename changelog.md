@@ -9,17 +9,19 @@
 - Fixed the icon offset when hiding the hud.
 
 ## 1.2
-## 1.2.0
+### 1.2.0
 - The root command's name can be changed in a config file.
 - The position, size and scale of the backlog HUD can be tweaked in the config file.
 - Resource packs now have more controls over the HUD's appearance, including text colour, header text, and some minor aspects of the layout.
 - Added built-in resource packs: "Questlog" and "Notebook".
 - The previous theme was moved to the "Questlog" pack. The new default resources are more simplistic
-
-## 1.2.1
+### 1.2.1
 - Fixed the "incompatible" warning on built-in resource packs in 1.20.2
 
-## 1.3.0
+## 1.3
+### 1.3.0
 - Added Cloth-Config screen with ModMenu integration
 - Added an option to allow fractional GUI Scales
 - Excluded image sources from the jar, dramatically reducing file size.
+### 1.3.1
+- Fixed some crash and errors that could occur during ReplayMod's replays.
