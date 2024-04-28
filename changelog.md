@@ -27,3 +27,5 @@
 - Fixed the "incompatible" warning on built-in resource packs in 1.20.3
 ### 1.3.2
 - Fixed a crash that could occur upon loading a replay in ReplayMod.
+### 1.3.3
+- Updated for 1.20.5

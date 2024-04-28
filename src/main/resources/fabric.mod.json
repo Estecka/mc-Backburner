@@ -26,10 +26,10 @@
 		"backburner.mixins.json"
 	],
 	"depends": {
+		"minecraft": ">=1.20.0 <1.20.5",
 		"fabricloader": ">=0.14.22",
-		"minecraft": "~1.20",
-		"java": ">=17",
-		"fabric-api": "*"
+		"fabric-api": "*",
+		"java": ">=17"
 	},
 	"suggests": {
 		"advanced-ui-scale": "*",
