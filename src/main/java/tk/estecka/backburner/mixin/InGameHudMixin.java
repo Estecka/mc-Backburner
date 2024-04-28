@@ -21,12 +21,10 @@ public abstract class InGameHudMixin
 	// Cursed shadow assignation ensures `client` is initialized when I need it.
 
 
-	@Inject( method="render", at=@At(value="INVOKE", target="net/minecraft/client/network/ClientPlayerInteractionManager.getCurrentGameMode ()Lnet/minecraft/world/GameMode;", ordinal=0) )
-	private void	RenderHud(DrawContext context, float tickDelta, CallbackInfo info){
-		if (!client.options.hudHidden){
-			this.backlogHud.Render(context, tickDelta);
-			RenderSystem.enableBlend();
-		}
+	@Inject( method="renderMainHud", at=@At("HEAD") )
+	private void RenderBacklogHud(DrawContext context, float tickDelta, CallbackInfo info){
+		this.backlogHud.Render(context, tickDelta);
+		RenderSystem.enableBlend();
 	}
 
 }
