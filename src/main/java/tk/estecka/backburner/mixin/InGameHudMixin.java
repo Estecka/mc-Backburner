@@ -3,7 +3,7 @@ package tk.estecka.backburner.mixin;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.RenderTickCounter;
 import tk.estecka.backburner.hud.BacklogHud;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -22,8 +22,8 @@ public abstract class InGameHudMixin
 
 
 	@Inject( method="renderMainHud", at=@At("HEAD") )
-	private void RenderBacklogHud(DrawContext context, float tickDelta, CallbackInfo info){
-		this.backlogHud.Render(context, tickDelta);
+	private void RenderBacklogHud(DrawContext context, RenderTickCounter tickDelta, CallbackInfo info){
+		this.backlogHud.Render(context);
 		RenderSystem.enableBlend();
 	}
 

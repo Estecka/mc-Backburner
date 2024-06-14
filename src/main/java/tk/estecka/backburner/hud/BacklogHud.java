@@ -40,7 +40,7 @@ public class BacklogHud
 		this.textRenderer = client.textRenderer;
 	}
 
-	public void	Render(DrawContext context, float tickDelta){
+	public void	Render(DrawContext context){
 		final List<String> items;
 		if (BacklogData.instance==null || (items=BacklogData.instance.content) == null || items.isEmpty())
 			return;
