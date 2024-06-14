@@ -12,7 +12,7 @@ public class GuiSpriteReloadListener
 implements SimpleSynchronousResourceReloadListener
 {
 	public Identifier	getFabricId(){
-		return new Identifier(Backburner.MODID, "gui_mcmeta");
+		return Identifier.of(Backburner.MODID, "gui_mcmeta");
 	}
 
 	static private boolean	AcceptsFile(Identifier id){

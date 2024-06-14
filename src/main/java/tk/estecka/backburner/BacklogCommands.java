@@ -26,7 +26,7 @@ import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 
 public class BacklogCommands
 {
-	static public final Identifier ID = new Identifier("backburner", "stack");
+	static public final Identifier ID = Identifier.of("backburner", "stack");
 
 	static public final String ROOT_COMMAND = Backburner.CONFIG.rootCommand;
 	static public final String BOOL_ARG  = "bool";
