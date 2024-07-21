@@ -14,3 +14,7 @@ Current master
 ### 1.20.5
 #### No Workaround
 - `InGameHud::render` was completely revamped, requiring a new mixin injection point. On the bright side, the injection point in this version looks infinitely cleaner.
+
+### 1.21
+#### No Workaround
+- Main Hud render now takes a `RenderTickCounter`, instead of a straight up float.
