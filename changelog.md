@@ -16,7 +16,7 @@
 - Added built-in resource packs: "Questlog" and "Notebook".
 - The previous theme was moved to the "Questlog" pack. The new default resources are more simplistic
 ### 1.2.1
-- Fixed the "incompatible" warning on built-in resource packs in 1.20.2
+- Fixed the "incompatible" warning on built-in resource packs in MC 1.20.2
 
 ## 1.3
 ### 1.3.0
@@ -24,8 +24,13 @@
 - Added an option to allow fractional GUI Scales
 - Excluded image sources from the jar, dramatically reducing file size.
 ### 1.3.1
-- Fixed the "incompatible" warning on built-in resource packs in 1.20.3
+- Fixed the "incompatible" warning on built-in resource packs in MC 1.20.3
 ### 1.3.2
 - Fixed a crash that could occur upon loading a replay in ReplayMod.
 ### 1.3.3
 - Updated for 1.20.5
+- Updated for MC 1.20.5
+### 1.3.4
+- Updated for MC 1.21
+### 1.3.5
+- Fixed incompatibility with Fabric-Loader 0.16

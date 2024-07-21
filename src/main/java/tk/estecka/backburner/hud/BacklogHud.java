@@ -35,8 +35,8 @@ public class BacklogHud
 	private final MinecraftClient client;
 	private final TextRenderer textRenderer;
 
-	public BacklogHud(MinecraftClient client){
-		this.client = client;
+	public BacklogHud(){
+		this.client = MinecraftClient.getInstance();
 		this.textRenderer = client.textRenderer;
 	}
 
