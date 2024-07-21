@@ -16,9 +16,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 public abstract class InGameHudMixin 
 {
 	@Shadow MinecraftClient client;
-	@Unique final BacklogHud backlogHud = new BacklogHud(client = client);
-	// Cursed shadow assignation ensures `client` is initialized when I need it.
-
+	@Unique final BacklogHud backlogHud = new BacklogHud();
 
 	@Inject( method="render", at=@At(value="INVOKE", target="net/minecraft/client/network/ClientPlayerInteractionManager.getCurrentGameMode ()Lnet/minecraft/world/GameMode;", ordinal=0) )
 	private void	RenderHud(MatrixStack matrices, float tickDelta, CallbackInfo info){

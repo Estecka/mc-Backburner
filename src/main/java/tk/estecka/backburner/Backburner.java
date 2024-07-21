@@ -35,11 +35,11 @@ public class Backburner implements ClientModInitializer
 		}
 
 		BacklogCommands.Register();
-		ClientPlayConnectionEvents.JOIN.register(new Identifier(MODID, "reload"), (handler, packet, client)->BacklogData.Reload());
+		ClientPlayConnectionEvents.JOIN.register(Identifier.of(MODID, "reload"), (handler, packet, client)->BacklogData.Reload());
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new GuiSpriteReloadListener());
 
 		var mod = FabricLoader.getInstance().getModContainer(MODID).get();
-		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "notebook"), mod, Text.literal("Note-Book"     ), ResourcePackActivationType.NORMAL);
-		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "questlog"), mod, Text.literal("Final Questlog"), ResourcePackActivationType.NORMAL);
+		ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of(MODID, "notebook"), mod, Text.literal("Note-Book"     ), ResourcePackActivationType.NORMAL);
+		ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of(MODID, "questlog"), mod, Text.literal("Final Questlog"), ResourcePackActivationType.NORMAL);
 	}
 }

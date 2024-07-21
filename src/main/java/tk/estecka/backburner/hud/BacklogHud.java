@@ -27,9 +27,9 @@ public class BacklogHud
 extends DrawableHelper
 {
 	static public final Map<Identifier,GuiSpriteInfo> sprites = new HashMap<Identifier,GuiSpriteInfo>();
-	static private final Identifier ICON_ID   = new Identifier(Backburner.MODID, "textures/gui/backlog/icon.png"  );
-	static private final Identifier HEADER_ID = new Identifier(Backburner.MODID, "textures/gui/backlog/header.png");
-	static private final Identifier ITEM_ID   = new Identifier(Backburner.MODID, "textures/gui/backlog/item.png"  );
+	static private final Identifier ICON_ID   = Identifier.of(Backburner.MODID, "textures/gui/backlog/icon.png"  );
+	static private final Identifier HEADER_ID = Identifier.of(Backburner.MODID, "textures/gui/backlog/header.png");
+	static private final Identifier ITEM_ID   = Identifier.of(Backburner.MODID, "textures/gui/backlog/item.png"  );
 	static private final MutableText HEADER_TITLE = Text.translatable("backburner.header.title");
 
 	static public boolean isHidden = false;
@@ -38,8 +38,8 @@ extends DrawableHelper
 	private final MinecraftClient client;
 	private final TextRenderer textRenderer;
 
-	public BacklogHud(MinecraftClient client){
-		this.client = client;
+	public BacklogHud(){
+		this.client = MinecraftClient.getInstance();
 		this.textRenderer = client.textRenderer;
 	}
 
