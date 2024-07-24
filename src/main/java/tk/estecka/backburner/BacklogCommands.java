@@ -23,6 +23,7 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
+import static tk.estecka.backburner.IndexArgumentType.index;
 
 public class BacklogCommands
 {
@@ -38,10 +39,13 @@ public class BacklogCommands
 
 	static private final Text ADDED_FEEDBACK   = Text.literal("Added: ").formatted(Formatting.BOLD).formatted(Formatting.AQUA);
 	static private final Text REMOVED_FEEDBACK = Text.literal("Removed: ").formatted(Formatting.BOLD).formatted(Formatting.GOLD);
-	
+
 	static public void	Register(){
 		ClientCommandRegistrationCallback.EVENT.register(ID, BacklogCommands::RegisterWith);
 	}
+
+	static private IndexArgumentType indexBeforeLast(){ return index(() -> BacklogData.instance.content.size() - 1 ); }
+	static private IndexArgumentType indexAfterLast (){ return index(() -> BacklogData.instance.content.size()     ); }
 
 	static public void	RegisterWith(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess){
 		var root = literal(ROOT_COMMAND);
@@ -57,7 +61,7 @@ public class BacklogCommands
 
 
 		root.then(literal("insert")
-			.then(argument(INDEX_ARG, integer(0))
+			.then(argument(INDEX_ARG, indexAfterLast())
 				.then(argument(VALUE_ARG, greedyString())
 					.executes(BacklogCommands::Insert)
 				)
@@ -82,13 +86,13 @@ public class BacklogCommands
 		);
 
 		root.then(literal("remove")
-			.then(argument(INDEX_ARG, integer(0))
+			.then(argument(INDEX_ARG, indexBeforeLast())
 				.suggests(BacklogCommands::IndexAutofill)
 				.executes(BacklogCommands::Remove)
 			)
 		);
 		root.then(literal("pop")
-			.then(argument(INDEX_ARG, integer(0))
+			.then(argument(INDEX_ARG, indexBeforeLast())
 				.suggests(BacklogCommands::IndexAutofill)
 				.executes(BacklogCommands::Remove)
 			)
@@ -114,13 +118,13 @@ public class BacklogCommands
 		);
 
 		root.then(literal("bump")
-			.then(argument(INDEX_ARG, integer(0))
+			.then(argument(INDEX_ARG, indexBeforeLast())
 				.suggests(BacklogCommands::IndexAutofill)
 				.executes(BacklogCommands::Bump)
 			)
 		);
 		root.then(literal("bump")
-			.then(argument(INDEX_ARG, integer(0))
+			.then(argument(INDEX_ARG, indexBeforeLast())
 				.suggests(BacklogCommands::IndexAutofill)
 				.then(argument(OFFSET_ARG, integer())
 					.executes(BacklogCommands::BumpOffset)
@@ -128,15 +132,15 @@ public class BacklogCommands
 			)
 		);
 		root.then(literal("move")
-			.then(argument(SRC_ARG, integer(0))
+			.then(argument(SRC_ARG, indexBeforeLast())
 				.suggests(BacklogCommands::IndexAutofill)
-				.then(argument(DST_ARG, integer(0))
+				.then(argument(DST_ARG, indexBeforeLast())
 					.executes(BacklogCommands::Move)
 				)
 			)
 		);
 		root.then(literal("edit")
-			.then(argument(INDEX_ARG, integer(0))
+			.then(argument(INDEX_ARG, indexBeforeLast())
 				.suggests(BacklogCommands::EntryAutofill)
 				.then(argument(VALUE_ARG, greedyString())
 					.executes(BacklogCommands::Set)
@@ -162,6 +166,8 @@ public class BacklogCommands
 	
 	static private CompletableFuture<Suggestions> IndexAutofill(final CommandContext<FabricClientCommandSource> context, final SuggestionsBuilder builder){
 		final var items = BacklogData.instance.content;
+		builder.suggest("first");
+		builder.suggest("last");
 		for (int i=0; i<items.size(); i++)
 			builder.suggest(i, new LiteralMessage(items.get(i)));
 		return builder.buildFuture();
