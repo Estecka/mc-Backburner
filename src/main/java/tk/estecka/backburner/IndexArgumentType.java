@@ -1,16 +1,11 @@
 package tk.estecka.backburner;
 
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.suggestion.Suggestions;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 public class IndexArgumentType
 implements ArgumentType<Integer>
@@ -46,13 +41,6 @@ implements ArgumentType<Integer>
 			reader.setCursor(start);
 			throw e;
 		}
-	}
-
-	@Override
-	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder){
-		builder.suggest("first");
-		builder.suggest("last");
-		return builder.buildFuture();
 	}
 
 	@Override

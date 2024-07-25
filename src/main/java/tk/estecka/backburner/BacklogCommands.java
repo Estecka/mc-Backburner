@@ -62,6 +62,7 @@ public class BacklogCommands
 
 		root.then(literal("insert")
 			.then(argument(INDEX_ARG, indexAfterLast())
+				.suggests(BacklogCommands::IndexAutofill)
 				.then(argument(VALUE_ARG, greedyString())
 					.executes(BacklogCommands::Insert)
 				)
@@ -136,6 +137,7 @@ public class BacklogCommands
 				.suggests(BacklogCommands::IndexAutofill)
 				.then(argument(DST_ARG, indexBeforeLast())
 					.executes(BacklogCommands::Move)
+					.suggests(BacklogCommands::IndexAutofill)
 				)
 			)
 		);
@@ -166,10 +168,16 @@ public class BacklogCommands
 	
 	static private CompletableFuture<Suggestions> IndexAutofill(final CommandContext<FabricClientCommandSource> context, final SuggestionsBuilder builder){
 		final var items = BacklogData.instance.content;
+		final String input = builder.getRemaining();
+
 		builder.suggest("first");
 		builder.suggest("last");
+
+		char first;
+		if  (input.length() < 1 || (first=input.charAt(0)) < 'a' || 'z' < first)
 		for (int i=0; i<items.size(); i++)
 			builder.suggest(i, new LiteralMessage(items.get(i)));
+
 		return builder.buildFuture();
 	}
 
