@@ -3,7 +3,7 @@
 	"backburner.config.category.hud": "HUD",
 	"backburner.config.category.command": "Command",
 	"backburner.config.commandRoot": "Root Command",
-	"backburner.config.commandRoot.description": "Root change won't take effect until you restart the game.",
+	"backburner.config.commandRoot.description": "Changes to the root won't take effect until you restart the game!",
 	"backburner.config.commandRoot.tooltip": "Change the command used to interact with the backlog, in case its name conflicts with another mod",
 	"backburner.config.anchorX": "Anchor X",
 	"backburner.config.anchorX.tooltip": "Which side of the screen the hud will be anchored to.\n0: left\n1: right",

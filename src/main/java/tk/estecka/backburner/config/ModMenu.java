@@ -23,6 +23,18 @@ implements ModMenuApi
 			final var CMD = builder.getOrCreateCategory(Text.translatable("backburner.config.category.command"));
 
 			CMD.addEntry(
+				entries.startStrField(Text.translatable("backburner.config.commandRoot"), CONFIG.rootCommand)
+				.setSaveConsumer(v -> CONFIG.rootCommand = v)
+				.setDefaultValue(defaultConfig.rootCommand)
+				.setTooltip(Text.translatable("backburner.config.commandRoot.tooltip"))
+				.build()
+				);
+			CMD.addEntry(
+				entries.startTextDescription(Text.translatable("backburner.config.commandRoot.description"))
+					.build()
+			);
+
+			CMD.addEntry(
 				entries.startBooleanToggle(Text.translatable("backburner.config.feedback.addition"), CONFIG.addFeedback)
 					.setSaveConsumer(v -> CONFIG.addFeedback=v)
 					.setDefaultValue(defaultConfig.addFeedback)
@@ -32,20 +44,6 @@ implements ModMenuApi
 				entries.startBooleanToggle(Text.translatable("backburner.config.feedback.removal"), CONFIG.delFeedback)
 					.setSaveConsumer(v -> CONFIG.delFeedback=v)
 					.setDefaultValue(defaultConfig.delFeedback)
-					.build()
-			);
-
-			
-			CMD.addEntry(
-				entries.startStrField(Text.translatable("backburner.config.commandRoot"), CONFIG.rootCommand)
-				.setSaveConsumer(v -> CONFIG.rootCommand = v)
-				.setDefaultValue(defaultConfig.rootCommand)
-				.setTooltip(Text.translatable("backburner.config.commandRoot.tooltip"))
-				.build()
-				);
-
-			CMD.addEntry(
-				entries.startTextDescription(Text.translatable("backburner.config.commandRoot.description"))
 					.build()
 			);
 
