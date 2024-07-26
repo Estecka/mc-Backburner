@@ -30,7 +30,7 @@ public class BacklogCommands
 {
 	static public final Identifier ID = Identifier.of("backburner", "stack");
 
-	static public final String ROOT_COMMAND = Backburner.CONFIG.rootCommand;
+	static public final String ROOT_COMMAND = CONFIG.rootCommand;
 	static public final String BOOL_ARG  = "bool";
 	static public final String INDEX_ARG = "index";
 	static public final String OFFSET_ARG = "offset";
@@ -340,7 +340,7 @@ public class BacklogCommands
 		}
 
 		items.clear();
-		context.getSource().sendFeedback(Text.translatable("backburner.feedback.clear", Text.literal("/"+Backburner.CONFIG.rootCommand+" reload")));
+		context.getSource().sendFeedback(Text.translatable("backburner.feedback.clear", Text.literal("/"+CONFIG.rootCommand+" reload")));
 		return 1;
 	}
 
