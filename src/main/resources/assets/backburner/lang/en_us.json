@@ -6,7 +6,7 @@
 	"backburner.config.commandRoot": "Root Command",
 	"backburner.config.commandRoot.tooltip": "Change the command used to interact with the backlog, in case its name conflicts with another mod",
 	"backburner.config.anchorX": "Anchor X",
-	"backburner.config.anchorX.toolrip": "Which side of the screen the hud will be anchored to.\n0: left\n1: right",
+	"backburner.config.anchorX.tooltip": "Which side of the screen the hud will be anchored to.\n0: left\n1: right",
 	"backburner.config.hudX": "Position X",
 	"backburner.config.hudY": "Position Y",
 	"backburner.config.hudWidth": "Base Width",
