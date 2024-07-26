@@ -34,6 +34,7 @@ By default, all sub-commands use `/note` as a root. The name of the root can be 
 - `pop` Removes the top-most item.
 - `shift` Removes the bottom-most item.
 - `pop|remove <index>` Removes the specified item.
+- `clear` Removes everything.
 
 ### Editing
 - `edit <index> <text>` Overwrites an existing item. Auto-completion will suggest the old value.

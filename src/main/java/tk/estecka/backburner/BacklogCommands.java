@@ -149,6 +149,10 @@ public class BacklogCommands
 			)
 		);
 
+		root.then(literal("clear")
+			.executes(BacklogCommands::Clear)
+		);
+
 		dispatcher.register(root);
 	}
 
@@ -324,6 +328,18 @@ public class BacklogCommands
 		PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index));
 		items.remove(index);
 		BacklogData.TrySave();
+		return 1;
+	}
+
+	static int Clear(CommandContext<FabricClientCommandSource> context){
+		final var items = BacklogData.instance.content;
+		if (items.isEmpty()){
+			context.getSource().sendError(Text.literal("Nothing to remove."));
+			return 0;
+		}
+
+		items.clear();
+		context.getSource().sendFeedback(Text.translatable("backburner.feedback.clear", Text.literal("/"+Backburner.CONFIG.rootCommand+" reload")));
 		return 1;
 	}
 

@@ -39,3 +39,4 @@
 - Added an option to change which side of the screen the hud is anchored to.
 - Added `first` and `last` as supported values for indices.
 - Added `add` as an alias to `insert`.
+- Added the commmand `clear`
