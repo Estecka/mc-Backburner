@@ -37,6 +37,13 @@ implements ModMenuApi
 
 
 			HUD.addEntry(
+				entries.startFloatField(Text.translatable("backburner.config.anchorX"), CONFIG.anchorX)
+					.setSaveConsumer(v -> CONFIG.anchorX = v)
+					.setDefaultValue(defaultConfig.anchorX)
+					.setTooltip(Text.translatable("backburner.config.anchorX.tooltip"))
+					.build()
+			);
+			HUD.addEntry(
 				entries.startIntField(Text.translatable("backburner.config.hudX"), CONFIG.hudX)
 					.setSaveConsumer(v -> CONFIG.hudX = v)
 					.setDefaultValue(defaultConfig.hudX)

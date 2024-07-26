@@ -27,8 +27,7 @@ public class Backburner implements ClientModInitializer
 	@Override
 	public void onInitializeClient() {
 		try {
-			CONFIG_IO.failHardonRead = false;
-			CONFIG_IO.GetOrCreate(CONFIG);
+			CONFIG_IO.GetIfExists(CONFIG);
 		}
 		catch (IOException e){
 			LOGGER.error("{}", e);
