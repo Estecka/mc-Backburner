@@ -26,21 +26,16 @@ implements ArgumentType<Integer>
 
 	@Override
 	public Integer parse(StringReader reader) throws CommandSyntaxException {
-		try {
-			return this.AsIntArg().parse(reader);
-		}
-		catch (CommandSyntaxException e) {
-			int start = reader.getCursor();
-			String value = reader.readString();
+		int start = reader.getCursor();
+		String value = reader.readString();
 
-			if (value.equals("first"))
-				return 0;
-			if (value.equals("last"))
-				return last.get();
+		if (value.equals("first"))
+			return 0;
+		if (value.equals("last"))
+			return last.get();
 
-			reader.setCursor(start);
-			throw e;
-		}
+		reader.setCursor(start);
+		return this.AsIntArg().parse(reader);
 	}
 
 	@Override

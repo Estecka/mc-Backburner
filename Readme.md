@@ -23,7 +23,7 @@ By default, all sub-commands use `/note` as a root. The name of the root can be 
 
 `<text>` arguments are greedy, and do not need to be quoted.
 
-`<index>` arguments also support `first` and `last` as an alternative to numeric values.
+`<index>` arguments also support `first` and `last` as alternatives to numeric values.
 
 ### Adding items
 - `push <text>` Adds an item at the top.
