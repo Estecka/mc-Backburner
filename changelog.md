@@ -37,6 +37,7 @@
 
 ## 1.4
 - Added an option to change which side of the screen the hud is anchored to.
+- Added options to disable some command feedbacks.
 - Added `first` and `last` as supported values for indices.
 - Added `add` as an alias to `insert`.
 - Added the commmand `clear`

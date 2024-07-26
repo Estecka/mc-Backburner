@@ -23,6 +23,7 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
+import static tk.estecka.backburner.Backburner.CONFIG;
 import static tk.estecka.backburner.IndexArgumentType.index;
 
 public class BacklogCommands
@@ -286,7 +287,7 @@ public class BacklogCommands
 			index = items.size();
 		}
 
-		PrintEntry(context, ADDED_FEEDBACK, index, value);
+		if (CONFIG.addFeedback) PrintEntry(context, ADDED_FEEDBACK, index, value);
 		items.add(index, value);
 		BacklogData.TrySave();
 		return 1;
@@ -304,9 +305,9 @@ public class BacklogCommands
 			return -1;
 		}
 
-		PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index));
+		if (CONFIG.delFeedback) PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index));
 		items.remove(index);
-		PrintEntry(context, ADDED_FEEDBACK, index, value);
+		if (CONFIG.addFeedback) PrintEntry(context, ADDED_FEEDBACK, index, value);
 		items.add(index, value);
 		BacklogData.TrySave();
 		return 1;
@@ -325,7 +326,7 @@ public class BacklogCommands
 		}
 		
 
-		PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index));
+		if (CONFIG.delFeedback) PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index));
 		items.remove(index);
 		BacklogData.TrySave();
 		return 1;

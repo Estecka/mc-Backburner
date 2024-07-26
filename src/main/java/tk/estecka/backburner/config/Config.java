@@ -9,6 +9,8 @@ public class Config
 extends ConfigIO.AFixedCoded
 {
 	public String rootCommand = "note";
+	public boolean addFeedback = true;
+	public boolean delFeedback = true;
 
 	public int hudX = 8;
 	public int hudY = 32;
@@ -22,6 +24,8 @@ extends ConfigIO.AFixedCoded
 
 	private final Map<String, Property<?>> codec = new HashMap<>(){{
 		put( "command.root", Property.String(()->rootCommand, v->rootCommand=v) );
+		put( "feedback.addition", Property.Boolean(()->addFeedback, v->addFeedback=v) );
+		put( "feedback.removal",  Property.Boolean(()->delFeedback, v->delFeedback=v) );
 		put( "hud.x", Property.Integer(()->hudX, v->hudX=v) );
 		put( "hud.y", Property.Integer(()->hudY, v->hudY=v) );
 		put( "hud.anchorX", Property.Float(()->anchorX, v->anchorX=v) );
