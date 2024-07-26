@@ -22,9 +22,13 @@ implements ModMenuApi
 			final var HUD = builder.getOrCreateCategory(Text.translatable("backburner.config.category.hud"));
 			final var CMD = builder.getOrCreateCategory(Text.translatable("backburner.config.category.command"));
 
+			CMD.addEntry(
+				entries.startTextDescription(Text.translatable("backburner.config.restart"))
+					.build()
+			);
 
 			CMD.addEntry(
-				entries.startStrField(Text.translatable("backburner.config.commandRoot").append("*"), CONFIG.rootCommand)
+				entries.startStrField(Text.translatable("backburner.config.commandRoot"), CONFIG.rootCommand)
 					.setSaveConsumer(v -> CONFIG.rootCommand = v)
 					.setDefaultValue(defaultConfig.rootCommand)
 					.setTooltip(Text.translatable("backburner.config.commandRoot.tooltip"))
