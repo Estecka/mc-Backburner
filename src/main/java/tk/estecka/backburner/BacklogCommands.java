@@ -68,13 +68,15 @@ public class BacklogCommands
 				)
 			)
 		);
-		// root.then(literal("push")
-		// 	.then(argument(INDEX_ARG, integer(0))
-		// 		.then(argument(VALUE_ARG, greedyString())
-		// 			.executes(BacklogCommand::Insert)
-		// 		)
-		// 	)
-		// );
+		root.then(literal("add")
+			.then(argument(INDEX_ARG, indexAfterLast())
+				.suggests(BacklogCommands::IndexAutofill)
+				.then(argument(VALUE_ARG, greedyString())
+					.executes(BacklogCommands::Insert)
+				)
+			)
+		);
+
 		root.then(literal("push")
 			.then(argument(VALUE_ARG, greedyString())
 				.executes(BacklogCommands::Push)
@@ -104,10 +106,6 @@ public class BacklogCommands
 		root.then(literal("shift")
 			.executes(BacklogCommands::Shift)
 		);
-
-		// root.then(argument(VALUE_ARG, greedyString())
-		// 	.executes(BacklogCommand::Push)
-		// );
 
 		root.then(literal("hide")
 			.executes(BacklogCommands::HideToogle)
@@ -174,7 +172,7 @@ public class BacklogCommands
 		builder.suggest("last");
 
 		char first;
-		if  (input.length() < 1 || (first=input.charAt(0)) < 'a' || 'z' < first)
+		if  (input.isEmpty() || (!input.isBlank() && ((first=input.charAt(0)) < 'a' || 'z' < first)))
 		for (int i=0; i<items.size(); i++)
 			builder.suggest(i, new LiteralMessage(items.get(i)));
 
