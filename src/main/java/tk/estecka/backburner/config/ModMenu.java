@@ -59,18 +59,21 @@ implements ModMenuApi
 				entries.startIntField(Text.translatable("backburner.config.hudX"), CONFIG.hudX)
 					.setSaveConsumer(v -> CONFIG.hudX = v)
 					.setDefaultValue(defaultConfig.hudX)
+					.setTooltip(Text.translatable("backburner.config.hudX.tooltip"))
 					.build()
 			);
 			HUD.addEntry(
 				entries.startIntField(Text.translatable("backburner.config.hudY"), CONFIG.hudY)
 					.setSaveConsumer(v -> CONFIG.hudY = v)
 					.setDefaultValue(defaultConfig.hudY)
+					.setTooltip(Text.translatable("backburner.config.hudY.tooltip"))
 					.build()
 			);
 			HUD.addEntry(
 				entries.startIntField(Text.translatable("backburner.config.hudWidth"), CONFIG.hudWdt)
 					.setSaveConsumer(v -> CONFIG.hudWdt = v)
 					.setDefaultValue(defaultConfig.hudWdt)
+					.setTooltip(Text.translatable("backburner.config.hudWidth.tooltip"))
 					.build()
 			);
 			HUD.addEntry(
