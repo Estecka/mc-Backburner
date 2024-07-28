@@ -55,8 +55,10 @@ public class BacklogHud
 		matrices.push();
 		matrices.scale(effectiveMultiplier, effectiveMultiplier, 1);
 
-		int x = CONFIG.hudX;
+		int x = (CONFIG.anchorX <= 0.5) ? CONFIG.hudX : -CONFIG.hudX;
 		int y = CONFIG.hudY;
+		x += CONFIG.anchorX * client.getWindow().getScaledWidth() / effectiveMultiplier;
+		x -= CONFIG.anchorX * CONFIG.hudWdt;
 
 		if (isHidden){
 			GuiSpriteInfo patch = sprites.getOrDefault(ICON_ID, GuiSpriteInfo.DEFAULT);

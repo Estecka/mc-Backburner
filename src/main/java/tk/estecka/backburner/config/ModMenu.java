@@ -22,32 +22,58 @@ implements ModMenuApi
 			final var HUD = builder.getOrCreateCategory(Text.translatable("backburner.config.category.hud"));
 			final var CMD = builder.getOrCreateCategory(Text.translatable("backburner.config.category.command"));
 
+			CMD.addEntry(
+				entries.startStrField(Text.translatable("backburner.config.commandRoot"), CONFIG.rootCommand)
+				.setSaveConsumer(v -> CONFIG.rootCommand = v)
+				.setDefaultValue(defaultConfig.rootCommand)
+				.setTooltip(Text.translatable("backburner.config.commandRoot.tooltip"))
+				.build()
+				);
+			CMD.addEntry(
+				entries.startTextDescription(Text.translatable("backburner.config.commandRoot.description"))
+					.build()
+			);
 
 			CMD.addEntry(
-				entries.startStrField(Text.translatable("backburner.config.commandRoot").append("*"), CONFIG.rootCommand)
-					.setSaveConsumer(v -> CONFIG.rootCommand = v)
-					.setDefaultValue(defaultConfig.rootCommand)
-					.setTooltip(Text.translatable("backburner.config.commandRoot.tooltip"))
+				entries.startBooleanToggle(Text.translatable("backburner.config.feedback.addition"), CONFIG.addFeedback)
+					.setSaveConsumer(v -> CONFIG.addFeedback=v)
+					.setDefaultValue(defaultConfig.addFeedback)
+					.build()
+			);
+			CMD.addEntry(
+				entries.startBooleanToggle(Text.translatable("backburner.config.feedback.removal"), CONFIG.delFeedback)
+					.setSaveConsumer(v -> CONFIG.delFeedback=v)
+					.setDefaultValue(defaultConfig.delFeedback)
 					.build()
 			);
 
 
 			HUD.addEntry(
+				entries.startFloatField(Text.translatable("backburner.config.anchorX"), CONFIG.anchorX)
+					.setSaveConsumer(v -> CONFIG.anchorX = v)
+					.setDefaultValue(defaultConfig.anchorX)
+					.setTooltip(Text.translatable("backburner.config.anchorX.tooltip"))
+					.build()
+			);
+			HUD.addEntry(
 				entries.startIntField(Text.translatable("backburner.config.hudX"), CONFIG.hudX)
 					.setSaveConsumer(v -> CONFIG.hudX = v)
 					.setDefaultValue(defaultConfig.hudX)
+					.setTooltip(Text.translatable("backburner.config.hudX.tooltip"))
 					.build()
 			);
 			HUD.addEntry(
 				entries.startIntField(Text.translatable("backburner.config.hudY"), CONFIG.hudY)
 					.setSaveConsumer(v -> CONFIG.hudY = v)
 					.setDefaultValue(defaultConfig.hudY)
+					.setTooltip(Text.translatable("backburner.config.hudY.tooltip"))
 					.build()
 			);
 			HUD.addEntry(
 				entries.startIntField(Text.translatable("backburner.config.hudWidth"), CONFIG.hudWdt)
 					.setSaveConsumer(v -> CONFIG.hudWdt = v)
 					.setDefaultValue(defaultConfig.hudWdt)
+					.setTooltip(Text.translatable("backburner.config.hudWidth.tooltip"))
 					.build()
 			);
 			HUD.addEntry(

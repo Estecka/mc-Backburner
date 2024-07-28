@@ -23,12 +23,14 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
+import static tk.estecka.backburner.Backburner.CONFIG;
+import static tk.estecka.backburner.IndexArgumentType.index;
 
 public class BacklogCommands
 {
 	static public final Identifier ID = Identifier.of("backburner", "stack");
 
-	static public final String ROOT_COMMAND = Backburner.CONFIG.rootCommand;
+	static public final String ROOT_COMMAND = CONFIG.rootCommand;
 	static public final String BOOL_ARG  = "bool";
 	static public final String INDEX_ARG = "index";
 	static public final String OFFSET_ARG = "offset";
@@ -38,10 +40,13 @@ public class BacklogCommands
 
 	static private final Text ADDED_FEEDBACK   = Text.literal("Added: ").formatted(Formatting.BOLD).formatted(Formatting.AQUA);
 	static private final Text REMOVED_FEEDBACK = Text.literal("Removed: ").formatted(Formatting.BOLD).formatted(Formatting.GOLD);
-	
+
 	static public void	Register(){
 		ClientCommandRegistrationCallback.EVENT.register(ID, BacklogCommands::RegisterWith);
 	}
+
+	static private IndexArgumentType indexBeforeLast(){ return index(() -> BacklogData.instance.content.size() - 1 ); }
+	static private IndexArgumentType indexAfterLast (){ return index(() -> BacklogData.instance.content.size()     ); }
 
 	static public void	RegisterWith(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess){
 		var root = literal(ROOT_COMMAND);
@@ -57,19 +62,22 @@ public class BacklogCommands
 
 
 		root.then(literal("insert")
-			.then(argument(INDEX_ARG, integer(0))
+			.then(argument(INDEX_ARG, indexAfterLast())
+				.suggests(BacklogCommands::IndexAutofill)
 				.then(argument(VALUE_ARG, greedyString())
 					.executes(BacklogCommands::Insert)
 				)
 			)
 		);
-		// root.then(literal("push")
-		// 	.then(argument(INDEX_ARG, integer(0))
-		// 		.then(argument(VALUE_ARG, greedyString())
-		// 			.executes(BacklogCommand::Insert)
-		// 		)
-		// 	)
-		// );
+		root.then(literal("add")
+			.then(argument(INDEX_ARG, indexAfterLast())
+				.suggests(BacklogCommands::IndexAutofill)
+				.then(argument(VALUE_ARG, greedyString())
+					.executes(BacklogCommands::Insert)
+				)
+			)
+		);
+
 		root.then(literal("push")
 			.then(argument(VALUE_ARG, greedyString())
 				.executes(BacklogCommands::Push)
@@ -82,13 +90,13 @@ public class BacklogCommands
 		);
 
 		root.then(literal("remove")
-			.then(argument(INDEX_ARG, integer(0))
+			.then(argument(INDEX_ARG, indexBeforeLast())
 				.suggests(BacklogCommands::IndexAutofill)
 				.executes(BacklogCommands::Remove)
 			)
 		);
 		root.then(literal("pop")
-			.then(argument(INDEX_ARG, integer(0))
+			.then(argument(INDEX_ARG, indexBeforeLast())
 				.suggests(BacklogCommands::IndexAutofill)
 				.executes(BacklogCommands::Remove)
 			)
@@ -100,10 +108,6 @@ public class BacklogCommands
 			.executes(BacklogCommands::Shift)
 		);
 
-		// root.then(argument(VALUE_ARG, greedyString())
-		// 	.executes(BacklogCommand::Push)
-		// );
-
 		root.then(literal("hide")
 			.executes(BacklogCommands::HideToogle)
 		);
@@ -114,13 +118,13 @@ public class BacklogCommands
 		);
 
 		root.then(literal("bump")
-			.then(argument(INDEX_ARG, integer(0))
+			.then(argument(INDEX_ARG, indexBeforeLast())
 				.suggests(BacklogCommands::IndexAutofill)
 				.executes(BacklogCommands::Bump)
 			)
 		);
 		root.then(literal("bump")
-			.then(argument(INDEX_ARG, integer(0))
+			.then(argument(INDEX_ARG, indexBeforeLast())
 				.suggests(BacklogCommands::IndexAutofill)
 				.then(argument(OFFSET_ARG, integer())
 					.executes(BacklogCommands::BumpOffset)
@@ -128,21 +132,26 @@ public class BacklogCommands
 			)
 		);
 		root.then(literal("move")
-			.then(argument(SRC_ARG, integer(0))
+			.then(argument(SRC_ARG, indexBeforeLast())
 				.suggests(BacklogCommands::IndexAutofill)
-				.then(argument(DST_ARG, integer(0))
+				.then(argument(DST_ARG, indexBeforeLast())
 					.executes(BacklogCommands::Move)
+					.suggests(BacklogCommands::IndexAutofill)
 				)
 			)
 		);
 		root.then(literal("edit")
-			.then(argument(INDEX_ARG, integer(0))
+			.then(argument(INDEX_ARG, indexBeforeLast())
 				.suggests(BacklogCommands::EntryAutofill)
 				.then(argument(VALUE_ARG, greedyString())
 					.executes(BacklogCommands::Set)
 					.suggests(BacklogCommands::ValueAutofill)
 				)
 			)
+		);
+
+		root.then(literal("clear")
+			.executes(BacklogCommands::Clear)
 		);
 
 		dispatcher.register(root);
@@ -162,8 +171,16 @@ public class BacklogCommands
 	
 	static private CompletableFuture<Suggestions> IndexAutofill(final CommandContext<FabricClientCommandSource> context, final SuggestionsBuilder builder){
 		final var items = BacklogData.instance.content;
+		final String input = builder.getRemaining();
+
+		builder.suggest("first");
+		builder.suggest("last");
+
+		char first;
+		if  (input.isEmpty() || (!input.isBlank() && ((first=input.charAt(0)) < 'a' || 'z' < first)))
 		for (int i=0; i<items.size(); i++)
 			builder.suggest(i, new LiteralMessage(items.get(i)));
+
 		return builder.buildFuture();
 	}
 
@@ -270,7 +287,7 @@ public class BacklogCommands
 			index = items.size();
 		}
 
-		PrintEntry(context, ADDED_FEEDBACK, index, value);
+		if (CONFIG.addFeedback) PrintEntry(context, ADDED_FEEDBACK, index, value);
 		items.add(index, value);
 		BacklogData.TrySave();
 		return 1;
@@ -288,9 +305,9 @@ public class BacklogCommands
 			return -1;
 		}
 
-		PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index));
+		if (CONFIG.delFeedback) PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index));
 		items.remove(index);
-		PrintEntry(context, ADDED_FEEDBACK, index, value);
+		if (CONFIG.addFeedback) PrintEntry(context, ADDED_FEEDBACK, index, value);
 		items.add(index, value);
 		BacklogData.TrySave();
 		return 1;
@@ -309,9 +326,21 @@ public class BacklogCommands
 		}
 		
 
-		PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index));
+		if (CONFIG.delFeedback) PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index));
 		items.remove(index);
 		BacklogData.TrySave();
+		return 1;
+	}
+
+	static int Clear(CommandContext<FabricClientCommandSource> context){
+		final var items = BacklogData.instance.content;
+		if (items.isEmpty()){
+			context.getSource().sendError(Text.literal("Nothing to remove."));
+			return 0;
+		}
+
+		items.clear();
+		context.getSource().sendFeedback(Text.translatable("backburner.feedback.clear", Text.literal("/"+CONFIG.rootCommand+" reload")));
 		return 1;
 	}
 
