@@ -28,7 +28,6 @@
 ### 1.3.2
 - Fixed a crash that could occur upon loading a replay in ReplayMod.
 ### 1.3.3
-- Updated for 1.20.5
 - Updated for MC 1.20.5
 ### 1.3.4
 - Updated for MC 1.21
@@ -36,8 +35,11 @@
 - Fixed incompatibility with Fabric-Loader 0.16
 
 ## 1.4
+### 1.4.0
 - Added an option to change which side of the screen the hud is anchored to.
 - Added options to disable some command feedbacks.
 - Added `first` and `last` as supported values for indices.
 - Added `add` as an alias to `insert`.
 - Added the commmand `clear`
+### 1.4.1
+- Updated for MC 1.21.2

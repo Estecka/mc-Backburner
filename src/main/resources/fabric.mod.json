@@ -9,9 +9,10 @@
 	],
 	"contact": {
 		"homepage": "https://modrinth.com/mod/backburner",
-		"sources": "https://github.com/Estecka/mc-Backburner"
+		"sources": "https://github.com/Estecka/mc-Backburner",
+		"issues":  "https://github.com/Estecka/mc-Backburner/isues"
 	},
-	"license": "GNU AGPLv3",
+	"license": "EUPL-1.2",
 	"icon": "assets/backburner/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -26,7 +27,7 @@
 		"backburner.mixins.json"
 	],
 	"depends": {
-		"minecraft": "~1.21",
+		"minecraft": ">=1.21 <1.21.2",
 		"fabricloader": ">=0.15.11",
 		"fabric-api": "*",
 		"java": ">=21"
