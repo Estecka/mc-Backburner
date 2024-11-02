@@ -3,12 +3,13 @@ package tk.estecka.backburner.hud;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
@@ -62,17 +63,14 @@ public class BacklogHud
 
 		if (isHidden){
 			GuiSpriteInfo patch = sprites.getOrDefault(ICON_ID, GuiSpriteInfo.DEFAULT);
-			RenderSystem.setShaderTexture(0, ICON_ID);
-			RenderSystem.enableBlend();
 			Draw9Patch( ICON_ID, context, x+patch.padding.left(), y+patch.padding.top(), patch.baseWidth, patch.baseHeight, patch );
-			matrices.pop();
-			return;
 		}
-		
-		y = DrawTextBox( context, x, y, HEADER_ID, HEADER_TITLE );
-
-		for (int i=0; i<items.size(); i++)
-			y = DrawTextBox( context, x, y, ITEM_ID, Text.literal(String.format("%d • %s", i, items.get(i))) );
+		else {
+			y = DrawTextBox( context, x, y, HEADER_ID, HEADER_TITLE );
+	
+			for (int i=0; i<items.size(); i++)
+				y = DrawTextBox( context, x, y, ITEM_ID, Text.literal(String.format("%d • %s", i, items.get(i))) );
+		}
 
 		matrices.pop();
 	}
@@ -118,18 +116,18 @@ public class BacklogHud
 		float[] u = patch.u;
 		float[] v = patch.v;
 
-		RenderSystem.enableBlend();
 		for (int tileX=0; tileX<3; ++tileX)
 		for (int tileY=0; tileY<3; ++tileY)
 		if  (x[tileX]<x[tileX+1] && y[tileY]<y[tileY+1])
 		{
 			contextpp.callDrawTexturedQuad(
+				RenderLayer::getGuiTextured,
 				sprite,
 				x[tileX], x[tileX+1],
 				y[tileY], y[tileY+1],
-				z,
 				u[tileX], u[tileX+1],
-				v[tileY], v[tileY+1]
+				v[tileY], v[tileY+1],
+				0xffffffff
 			);
 			// int debugColor = 0xff000000 + tileX*0x00550000 + tileY*0x00005500;
 			// drawBorder(matrices, 
@@ -142,9 +140,12 @@ public class BacklogHud
 	}
 
 	private void	DrawStyledText(DrawContext context, OrderedText text, int x, int y, GuiSpriteInfo style){
+		context.draw(vProv -> DrawStyledText(context, text, x, y, style, vProv));
+	}
+
+	private void	DrawStyledText(DrawContext context, OrderedText text, int x, int y, GuiSpriteInfo style, VertexConsumerProvider vProv){
 		var m = context.getMatrices().peek().getPositionMatrix();
 		int light = LightmapTextureManager.MAX_LIGHT_COORDINATE;
-		var vProv = context.getVertexConsumers();
 
 		if (0 != (0xff000000 & style.outerlineColour)){
 			textRenderer.drawWithOutline(text, x-1, y-1, style.outlineColour, style.outerlineColour, m, vProv, light);
@@ -155,6 +156,5 @@ public class BacklogHud
 		if (0 != (0xff000000 & style.outlineColour))
 			textRenderer.drawWithOutline(text, x, y, style.textColour, style.outlineColour, m, vProv, light);
 		textRenderer.draw(text, x, y, style.textColour, style.textShadow, m, vProv, TextLayerType.NORMAL, 0x0, light);
-		vProv.draw();
 	}
 }
