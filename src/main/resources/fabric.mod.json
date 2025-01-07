@@ -27,7 +27,7 @@
 		"backburner.mixins.json"
 	],
 	"depends": {
-		"minecraft": ">=1.21.2 <1.21.4",
+		"minecraft": "~1.21.4",
 		"fabricloader": ">=0.16.9",
 		"fabric-api": "*",
 		"java": ">=21"

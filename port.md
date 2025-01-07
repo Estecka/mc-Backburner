@@ -22,3 +22,7 @@ Current master
 ## 1.21.2
 - Most `DrawContext.draw_xxx` now require a render layer as parameters. Existing parameters were rearranged.
 - The VertexConsummerProvider is no longer directly accessible for rendering text with outline.
+
+## 1.21.4
+### No workaround
+- `ResourceMetadataReader` was replaced with `ResourceMetadataReader`, which must now be backed by a codec.
