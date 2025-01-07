@@ -10,7 +10,7 @@
 	"contact": {
 		"homepage": "https://modrinth.com/mod/backburner",
 		"sources": "https://github.com/Estecka/mc-Backburner",
-		"issues":  "https://github.com/Estecka/mc-Backburner/isues"
+		"issues":  "https://github.com/Estecka/mc-Backburner/issues"
 	},
 	"license": "EUPL-1.2",
 	"icon": "assets/backburner/icon.png",
@@ -27,7 +27,7 @@
 		"backburner.mixins.json"
 	],
 	"depends": {
-		"minecraft": "~1.21.2",
+		"minecraft": ">=1.21.2 <1.21.4",
 		"fabricloader": ">=0.16.9",
 		"fabric-api": "*",
 		"java": ">=21"

@@ -24,7 +24,7 @@ public class GuiSpriteMeta
 	public Margin padding   = new Margin(0, 0, 0, 0);
 	public Margin ninepatch = new Margin(0, 0, 0, 0);
 	public Margin textarea  = new Margin(0, 0, 0, 0);
-	public Colour text      = new Colour("#ff000000", "#0000000", "#00000000", true);
+	public Colour text      = new Colour("#ff000000", "#00000000", "#00000000", false);
 
 	static public GuiSpriteMeta	Decode(ResourceMetadata meta){
 		var r = new GuiSpriteMeta();
