@@ -19,5 +19,10 @@
 	"backburner.config.hudScale.tooltip": "Scales the backlog's GUI Scale in relation to the vanilla HUD",
 	"backburner.config.hudScale.fractional": "Allow Fractional GUI Scale",
 	"backburner.config.hudScale.fractional.tooltip": "When disabled, the effective GUI Scale will be snapped to the closest integer.\nFractional scales may not look good without other mods such as \"Advanced UI Scale\"",
+	"backburner.config.writeAction": "`write` subcommand action",
+	"backburner.config.writeAction.top": "Add first",
+	"backburner.config.writeAction.top.tooltip": "Add new entries to the top.",
+	"backburner.config.writeAction.bottom": "Add last",
+	"backburner.config.writeAction.bottom.tooltip": "Add new entries to the bottom.",
 	"backburner.feedback.clear": "Backlog cleared. Use `%s` to undo."
 }

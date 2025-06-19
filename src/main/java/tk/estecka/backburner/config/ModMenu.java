@@ -11,7 +11,7 @@ import static tk.estecka.backburner.Backburner.CONFIG;
 public class ModMenu
 implements ModMenuApi
 {
-	static private final Config defaultConfig = new Config();
+	static private final Config DEFAULT = new Config();
 
 	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory(){
@@ -25,7 +25,7 @@ implements ModMenuApi
 			CMD.addEntry(
 				entries.startStrField(Text.translatable("backburner.config.commandRoot"), CONFIG.rootCommand)
 				.setSaveConsumer(v -> CONFIG.rootCommand = v)
-				.setDefaultValue(defaultConfig.rootCommand)
+				.setDefaultValue(DEFAULT.rootCommand)
 				.setTooltip(Text.translatable("backburner.config.commandRoot.tooltip"))
 				.build()
 				);
@@ -35,15 +35,24 @@ implements ModMenuApi
 			);
 
 			CMD.addEntry(
+				entries.startEnumSelector(Text.translatable("backburner.config.writeAction"), EWriteAction.class, CONFIG.writeAction)
+					.setEnumNameProvider(e->((EWriteAction)e).TranslatableName())
+					.setTooltipSupplier(EWriteAction::Tooltip)
+					.setSaveConsumer(v -> CONFIG.writeAction = v)
+					.setDefaultValue(DEFAULT.writeAction)
+					.build()
+			);
+
+			CMD.addEntry(
 				entries.startBooleanToggle(Text.translatable("backburner.config.feedback.addition"), CONFIG.addFeedback)
 					.setSaveConsumer(v -> CONFIG.addFeedback=v)
-					.setDefaultValue(defaultConfig.addFeedback)
+					.setDefaultValue(DEFAULT.addFeedback)
 					.build()
 			);
 			CMD.addEntry(
 				entries.startBooleanToggle(Text.translatable("backburner.config.feedback.removal"), CONFIG.delFeedback)
 					.setSaveConsumer(v -> CONFIG.delFeedback=v)
-					.setDefaultValue(defaultConfig.delFeedback)
+					.setDefaultValue(DEFAULT.delFeedback)
 					.build()
 			);
 
@@ -51,42 +60,42 @@ implements ModMenuApi
 			HUD.addEntry(
 				entries.startFloatField(Text.translatable("backburner.config.anchorX"), CONFIG.anchorX)
 					.setSaveConsumer(v -> CONFIG.anchorX = v)
-					.setDefaultValue(defaultConfig.anchorX)
+					.setDefaultValue(DEFAULT.anchorX)
 					.setTooltip(Text.translatable("backburner.config.anchorX.tooltip"))
 					.build()
 			);
 			HUD.addEntry(
 				entries.startIntField(Text.translatable("backburner.config.hudX"), CONFIG.hudX)
 					.setSaveConsumer(v -> CONFIG.hudX = v)
-					.setDefaultValue(defaultConfig.hudX)
+					.setDefaultValue(DEFAULT.hudX)
 					.setTooltip(Text.translatable("backburner.config.hudX.tooltip"))
 					.build()
 			);
 			HUD.addEntry(
 				entries.startIntField(Text.translatable("backburner.config.hudY"), CONFIG.hudY)
 					.setSaveConsumer(v -> CONFIG.hudY = v)
-					.setDefaultValue(defaultConfig.hudY)
+					.setDefaultValue(DEFAULT.hudY)
 					.setTooltip(Text.translatable("backburner.config.hudY.tooltip"))
 					.build()
 			);
 			HUD.addEntry(
 				entries.startIntField(Text.translatable("backburner.config.hudWidth"), CONFIG.hudWdt)
 					.setSaveConsumer(v -> CONFIG.hudWdt = v)
-					.setDefaultValue(defaultConfig.hudWdt)
+					.setDefaultValue(DEFAULT.hudWdt)
 					.setTooltip(Text.translatable("backburner.config.hudWidth.tooltip"))
 					.build()
 			);
 			HUD.addEntry(
 				entries.startFloatField(Text.translatable("backburner.config.hudScale"), CONFIG.hudScale)
 					.setSaveConsumer(v -> CONFIG.hudScale = v)
-					.setDefaultValue(defaultConfig.hudScale)
+					.setDefaultValue(DEFAULT.hudScale)
 					.setTooltip(Text.translatable("backburner.config.hudScale.tooltip"))
 					.build()
 			);
 			HUD.addEntry(
 				entries.startBooleanToggle(Text.translatable("backburner.config.hudScale.fractional"), CONFIG.allowFractional)
 					.setSaveConsumer(v -> CONFIG.allowFractional = v)
-					.setDefaultValue(defaultConfig.allowFractional)
+					.setDefaultValue(DEFAULT.allowFractional)
 					.setTooltip(Text.translatable("backburner.config.hudScale.fractional.tooltip"))
 					.build()
 			);
