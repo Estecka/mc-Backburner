@@ -13,8 +13,10 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import tk.estecka.backburner.config.EWriteAction;
 import tk.estecka.backburner.hud.BacklogHud;
 import java.util.concurrent.CompletableFuture;
+import org.jetbrains.annotations.Nullable;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static com.mojang.brigadier.arguments.BoolArgumentType.bool;
@@ -78,6 +80,11 @@ public class BacklogCommands
 			)
 		);
 
+		root.then(literal("write")
+			.then(argument(VALUE_ARG, greedyString())
+				.executes(ctx-> CONFIG.writeAction==EWriteAction.BOTTOM ? Enqueue(ctx) : Push(ctx))
+			)
+		);
 		root.then(literal("push")
 			.then(argument(VALUE_ARG, greedyString())
 				.executes(BacklogCommands::Push)
@@ -91,18 +98,22 @@ public class BacklogCommands
 
 		root.then(literal("remove")
 			.then(argument(INDEX_ARG, indexBeforeLast())
-				.suggests(BacklogCommands::IndexAutofill)
+				.suggests(BacklogCommands::EntryAutofill)
 				.executes(BacklogCommands::Remove)
-			)
-		);
-		root.then(literal("pop")
-			.then(argument(INDEX_ARG, indexBeforeLast())
-				.suggests(BacklogCommands::IndexAutofill)
-				.executes(BacklogCommands::Remove)
+				.then(argument(VALUE_ARG, greedyString())
+					.executes(BacklogCommands::RemoveStrict)
+				)
 			)
 		);
 		root.then(literal("pop")
 			.executes(BacklogCommands::Pop)
+			.then(argument(INDEX_ARG, indexBeforeLast())
+				.suggests(BacklogCommands::EntryAutofill)
+				.executes(BacklogCommands::Remove)
+				.then(argument(VALUE_ARG, greedyString())
+					.executes(BacklogCommands::RemoveStrict)
+				)
+			)
 		);
 		root.then(literal("shift")
 			.executes(BacklogCommands::Shift)
@@ -110,8 +121,6 @@ public class BacklogCommands
 
 		root.then(literal("hide")
 			.executes(BacklogCommands::HideToogle)
-		);
-		root.then(literal("hide")
 			.then(argument(BOOL_ARG, bool())
 				.executes(BacklogCommands::Hide)
 			)
@@ -121,11 +130,6 @@ public class BacklogCommands
 			.then(argument(INDEX_ARG, indexBeforeLast())
 				.suggests(BacklogCommands::IndexAutofill)
 				.executes(BacklogCommands::Bump)
-			)
-		);
-		root.then(literal("bump")
-			.then(argument(INDEX_ARG, indexBeforeLast())
-				.suggests(BacklogCommands::IndexAutofill)
 				.then(argument(OFFSET_ARG, integer())
 					.executes(BacklogCommands::BumpOffset)
 				)
@@ -215,7 +219,7 @@ public class BacklogCommands
 	}
 
 	static private int	Pop(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
-		return Remove(context, 0);
+		return Remove(context, 0, null);
 	}
 
 	static private int	Enqueue(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
@@ -223,7 +227,7 @@ public class BacklogCommands
 	}
 
 	static private int	Shift(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
-		return Remove(context, BacklogData.instance.content.size()-1);
+		return Remove(context, BacklogData.instance.content.size()-1, null);
 	}
 
 	static private int	Insert(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
@@ -231,7 +235,11 @@ public class BacklogCommands
 	}
 
 	static private int	Remove(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
-		return Remove(context, getInteger(context, INDEX_ARG));
+		return Remove(context, getInteger(context, INDEX_ARG), null);
+	}
+
+	static private int	RemoveStrict(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
+		return Remove(context, getInteger(context, INDEX_ARG), getString(context, VALUE_ARG));
 	}
 
 	static private int	Hide(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
@@ -313,7 +321,7 @@ public class BacklogCommands
 		return 1;
 	}
 
-	static int	Remove(CommandContext<FabricClientCommandSource> context, int index){
+	static int	Remove(CommandContext<FabricClientCommandSource> context, int index, @Nullable String expectedValue){
 		final var items = BacklogData.instance.content;
 		if (items.isEmpty()){
 			context.getSource().sendError(Text.literal("Nothing to remove."));
@@ -322,6 +330,11 @@ public class BacklogCommands
 		
 		if (index < 0 || index > items.size()-1){
 			context.getSource().sendError(Text.literal(String.format("Index %d out of bounds. Max %d.", index, items.size()-1)));
+			return -1;
+		}
+		
+		if (expectedValue != null && !items.get(index).equals(expectedValue)) {
+			context.getSource().sendError(Text.literal(String.format("Entry %d does not have the expected value.", index)));
 			return -1;
 		}
 		
