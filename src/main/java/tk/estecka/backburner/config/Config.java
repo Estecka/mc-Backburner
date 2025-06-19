@@ -9,6 +9,7 @@ public class Config
 extends ConfigIO.AFixedCoded
 {
 	public String rootCommand = "note";
+	public EWriteAction writeAction = EWriteAction.BOTTOM;
 	public boolean addFeedback = true;
 	public boolean delFeedback = true;
 
@@ -24,6 +25,7 @@ extends ConfigIO.AFixedCoded
 
 	private final Map<String, Property<?>> codec = new HashMap<>(){{
 		put( "command.root", Property.String(()->rootCommand, v->rootCommand=v) );
+		put( "command.write.action", new Property<EWriteAction>(()->writeAction, e->writeAction=e, EWriteAction::parse, EWriteAction::toString) );
 		put( "feedback.addition", Property.Boolean(()->addFeedback, v->addFeedback=v) );
 		put( "feedback.removal",  Property.Boolean(()->delFeedback, v->delFeedback=v) );
 		put( "hud.x", Property.Integer(()->hudX, v->hudX=v) );

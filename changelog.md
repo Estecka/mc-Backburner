@@ -43,3 +43,9 @@
 - Added the commmand `clear`
 ### 1.4.1
 - Updated for MC 1.21.2
+### 1.4.2
+- Updated for MC 1.21.4
+- Fixed a minor inconsistency in resource mcmeta default values.
+## 1.5
+- Added a configurable `write` command
+- The autocomplete for `remove`/`pop` will now show the entry's text.

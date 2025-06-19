@@ -10,7 +10,7 @@
 	"contact": {
 		"homepage": "https://modrinth.com/mod/backburner",
 		"sources": "https://github.com/Estecka/mc-Backburner",
-		"issues":  "https://github.com/Estecka/mc-Backburner/isues"
+		"issues":  "https://github.com/Estecka/mc-Backburner/issues"
 	},
 	"license": "EUPL-1.2",
 	"icon": "assets/backburner/icon.png",
