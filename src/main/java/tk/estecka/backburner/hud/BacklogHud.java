@@ -3,14 +3,10 @@ package tk.estecka.backburner.hud;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.joml.Matrix3x2fStack;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
@@ -18,7 +14,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import tk.estecka.backburner.Backburner;
 import tk.estecka.backburner.BacklogData;
-import tk.estecka.backburner.mixin.IDrawContextMixin;
 
 import static tk.estecka.backburner.Backburner.CONFIG;
 
@@ -31,7 +26,6 @@ public class BacklogHud
 	static private final MutableText HEADER_TITLE = Text.translatable("backburner.header.title");
 
 	static public boolean isHidden = false;
-	static private final int z = 0;
 
 	private final MinecraftClient client;
 	private final TextRenderer textRenderer;
@@ -52,9 +46,9 @@ public class BacklogHud
 			effectiveScale = Math.max(1, Math.round(effectiveScale));
 
 		float effectiveMultiplier = effectiveScale / (float)guiScale;
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.scale(effectiveMultiplier, effectiveMultiplier, 1);
+		Matrix3x2fStack matrices = context.getMatrices();
+		matrices.pushMatrix();
+		matrices.scale(effectiveMultiplier, effectiveMultiplier);
 
 		int x = (CONFIG.anchorX <= 0.5) ? CONFIG.hudX : -CONFIG.hudX;
 		int y = CONFIG.hudY;
@@ -72,7 +66,7 @@ public class BacklogHud
 				y = DrawTextBox( context, x, y, ITEM_ID, Text.literal(String.format("%d • %s", i, items.get(i))) );
 		}
 
-		matrices.pop();
+		matrices.popMatrix();
 	}
 
 	/**
@@ -110,7 +104,6 @@ public class BacklogHud
 
 	private static int[] x=new int[4], y=new int[4];
 	public void	Draw9Patch(Identifier sprite, DrawContext context, int originX, int originY, int totalW, int totalH, GuiSpriteInfo patch) {
-		IDrawContextMixin contextpp = (IDrawContextMixin)context;
 		GuiSpriteInfo.GetPatchPositions(x, originX, totalW, patch.patch.left(), patch.patch.right ());
 		GuiSpriteInfo.GetPatchPositions(y, originY, totalH, patch.patch.top (), patch.patch.bottom());
 		float[] u = patch.u;
@@ -120,17 +113,15 @@ public class BacklogHud
 		for (int tileY=0; tileY<3; ++tileY)
 		if  (x[tileX]<x[tileX+1] && y[tileY]<y[tileY+1])
 		{
-			contextpp.callDrawTexturedQuad(
-				RenderLayer::getGuiTextured,
+			context.drawTexturedQuad(
 				sprite,
-				x[tileX], x[tileX+1],
-				y[tileY], y[tileY+1],
+				x[tileX],   y[tileY],
+				x[tileX+1], y[tileY+1],
 				u[tileX], u[tileX+1],
-				v[tileY], v[tileY+1],
-				0xffffffff
+				v[tileY], v[tileY+1]
 			);
 			// int debugColor = 0xff000000 + tileX*0x00550000 + tileY*0x00005500;
-			// drawBorder(matrices, 
+			// context.drawBorder(
 			// 	x[tileX], y[tileY], 
 			// 	x[tileX+1] - x[tileX],
 			// 	y[tileY+1] - y[tileY],
@@ -139,22 +130,24 @@ public class BacklogHud
 		}
 	}
 
-	private void	DrawStyledText(DrawContext context, OrderedText text, int x, int y, GuiSpriteInfo style){
-		context.draw(vProv -> DrawStyledText(context, text, x, y, style, vProv));
-	}
-
-	private void	DrawStyledText(DrawContext context, OrderedText text, int x, int y, GuiSpriteInfo style, VertexConsumerProvider vProv){
-		var m = context.getMatrices().peek().getPositionMatrix();
-		int light = LightmapTextureManager.MAX_LIGHT_COORDINATE;
-
-		if (0 != (0xff000000 & style.outerlineColour)){
-			textRenderer.drawWithOutline(text, x-1, y-1, style.outlineColour, style.outerlineColour, m, vProv, light);
-			textRenderer.drawWithOutline(text, x-1, y+1, style.outlineColour, style.outerlineColour, m, vProv, light);
-			textRenderer.drawWithOutline(text, x+1, y-1, style.outlineColour, style.outerlineColour, m, vProv, light);
-			textRenderer.drawWithOutline(text, x+1, y+1, style.outlineColour, style.outerlineColour, m, vProv, light);
+	private void	DrawStyledText(DrawContext context, OrderedText text, int x, int y, GuiSpriteInfo style)
+	{
+		if  (!style.textShadow && 0 != (0xff000000 & style.outerlineColour))
+		for (int offX=-2; offX<=2; ++offX)
+		for (int offY=-2; offY<=2; ++offY)
+		if  (offX==2 || offX==-2 || offY==-2 || offY==2)
+		{
+			context.drawText(textRenderer, text, x+offX, y+offY, style.outerlineColour, false);
 		}
-		if (0 != (0xff000000 & style.outlineColour))
-			textRenderer.drawWithOutline(text, x, y, style.textColour, style.outlineColour, m, vProv, light);
-		textRenderer.draw(text, x, y, style.textColour, style.textShadow, m, vProv, TextLayerType.NORMAL, 0x0, light);
+
+		if  (!style.textShadow && 0 != (0xff000000 & style.outlineColour))
+		for (int offX=-1; offX<=1; ++offX)
+		for (int offY=-1; offY<=1; ++offY)
+		if  (offX==1 || offX==-1 || offY==-1 || offY==1)
+		{
+			context.drawText(textRenderer, text, x+offX, y+offY, style.outlineColour, false);
+		}
+
+		context.drawText(textRenderer, text, x, y, style.textColour, style.textShadow);
 	}
 }

@@ -3,7 +3,6 @@
 	"package": "tk.estecka.backburner.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"IDrawContextMixin",
 		"InGameHudMixin"
 	],
 	"injectors": {

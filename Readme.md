@@ -28,12 +28,13 @@ By default, all sub-commands use `/note` as a root. The name of the root can be 
 ### Adding items
 - `push <text>` Adds an item at the top.
 - `queue <text>` Adds an item at the bottom.
+- `write <text>` Adds an item to the list. (See config screen.)
 - `add|insert <index> <text>` Adds an item at an arbitrary index.
 
 ### Removing items
 - `pop` Removes the top-most item.
 - `shift` Removes the bottom-most item.
-- `pop|remove <index>` Removes the specified item.
+- `pop|remove <index>` Removes the specified item. Auto-completion will show the text for the appropriate index.
 - `clear` Removes everything.
 
 ### Editing
