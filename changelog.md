@@ -47,5 +47,8 @@
 - Updated for MC 1.21.4
 - Fixed a minor inconsistency in resource mcmeta default values.
 ## 1.5
+### 1.5.0
 - Added a configurable `write` command
 - The autocomplete for `remove`/`pop` will now show the entry's text.
+### 1.5.1
+- Marked embedded resource packs as compatible with all upcoming versions of minecraft.
