@@ -25,17 +25,11 @@ public class BacklogData
 {
 	static public BacklogData	instance = null;
 
-	static private final Gson gson;
-	static public final Type contentType = new TypeToken<List<String>>(){}.getType();
-	
-	static {
-		GsonBuilder builder = new GsonBuilder();
-		builder.setPrettyPrinting();
-		gson = builder.create();
-	}
+	static private final Type contentType = new TypeToken<List<String>>(){}.getType();
+	static private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 	private final File saveFile;
-	@NotNull public List<String> content = new ArrayList<String>();
+	@NotNull public List<BacklogEntry> content = new ArrayList<>();
 
 	public BacklogData(File saveFile){
 		this.saveFile = saveFile;
@@ -94,13 +88,17 @@ public class BacklogData
 		}
 	}
 
-	public List<String>	Load()
+	public List<BacklogEntry> Load()
 	throws FileNotFoundException, JsonIOException, JsonSyntaxException
 	{
 		JsonReader reader = new JsonReader(new FileReader(this.saveFile));
-		this.content = gson.fromJson(reader, contentType);
-		if (this.content == null)
-			this.content = new ArrayList<String>();
+		List<String> rawText = gson.fromJson(reader, contentType);
+		this.content = new ArrayList<>();
+		if  (rawText != null)
+		for (String rawEntry : rawText) {
+			this.content.add(new BacklogEntry(rawEntry));
+		}
+
 		return this.content;
 	}
 
@@ -108,9 +106,13 @@ public class BacklogData
 	throws IOException, JsonIOException
 	{
 		this.saveFile.getParentFile().mkdirs();
+		List<String> rawText = new ArrayList<>();
+		for (BacklogEntry entry : this.content){
+			rawText.add(entry.rawString());
+		}
 
 		try ( var writer = new FileWriter(this.saveFile) ){
-			gson.toJson(this.content, writer);
+			gson.toJson(rawText, writer);
 			// Otherwise required, but implied by the try-with-resource
 			// writer.flush();
 			// writer.close();

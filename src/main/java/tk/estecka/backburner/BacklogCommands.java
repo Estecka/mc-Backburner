@@ -169,7 +169,7 @@ public class BacklogCommands
 	static private CompletableFuture<Suggestions> EntryAutofill(final CommandContext<FabricClientCommandSource> context, final SuggestionsBuilder builder){
 		final var items = BacklogData.instance.content;
 		for (int i=0; i<items.size(); i++)
-			builder.suggest(String.format("%d %s", i, items.get(i)));
+			builder.suggest(String.format("%d %s", i, items.get(i).rawString()));
 		return builder.buildFuture();
 	}
 	
@@ -183,7 +183,7 @@ public class BacklogCommands
 		char first;
 		if  (input.isEmpty() || (!input.isBlank() && ((first=input.charAt(0)) < 'a' || 'z' < first)))
 		for (int i=0; i<items.size(); i++)
-			builder.suggest(i, new LiteralMessage(items.get(i)));
+			builder.suggest(i, new LiteralMessage(items.get(i).displayText().getString()));
 
 		return builder.buildFuture();
 	}
@@ -192,7 +192,7 @@ public class BacklogCommands
 		final var items = BacklogData.instance.content;
 		int i = getInteger(context, INDEX_ARG);
 		if (0 <= i && i < items.size())
-			builder.suggest(items.get(i));
+				builder.suggest(items.get(i).rawString());
 		return builder.buildFuture();
 	}
 
@@ -274,16 +274,16 @@ public class BacklogCommands
 /* # Command Logic                                                            */
 /******************************************************************************/
 
-	static private void	PrintEntry(CommandContext<FabricClientCommandSource> context, Text prefix, int index, String value) {
+	static private void	PrintEntry(CommandContext<FabricClientCommandSource> context, Text prefix, int index, Text value) {
 		var msg = MutableText.of(Text.empty().getContent())
 			.append(prefix)
 			.append(Text.literal(String.format("#%d ", index)).formatted(Formatting.YELLOW))
-			.append(Text.literal(value))
+			.append(value)
 		;
 		context.getSource().sendFeedback(msg);
 	}
 
-	static int	Insert(CommandContext<FabricClientCommandSource> context, int index, String value){
+	static int	Insert(CommandContext<FabricClientCommandSource> context, int index, String rawValue){
 		final var items = BacklogData.instance.content;
 		if (index < 0){
 			context.getSource().sendError(Text.literal(String.format("%d is an invalid index. Pushing item to the front.", index)));
@@ -295,13 +295,14 @@ public class BacklogCommands
 			index = items.size();
 		}
 
-		if (CONFIG.addFeedback) PrintEntry(context, ADDED_FEEDBACK, index, value);
+		BacklogEntry value = new BacklogEntry(rawValue);
+		if (CONFIG.addFeedback) PrintEntry(context, ADDED_FEEDBACK, index, value.displayText());
 		items.add(index, value);
 		BacklogData.TrySave();
 		return 1;
 	}
 
-	static int	Set(CommandContext<FabricClientCommandSource> context, int index, String value){
+	static int Set(CommandContext<FabricClientCommandSource> context, int index, String rawValue){
 		final var items = BacklogData.instance.content;
 		if (items.isEmpty()){
 			context.getSource().sendError(Text.literal("Nothing to edit."));
@@ -313,9 +314,10 @@ public class BacklogCommands
 			return -1;
 		}
 
-		if (CONFIG.delFeedback) PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index));
+		BacklogEntry value = new BacklogEntry(rawValue);
+		if (CONFIG.delFeedback) PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index).displayText());
 		items.remove(index);
-		if (CONFIG.addFeedback) PrintEntry(context, ADDED_FEEDBACK, index, value);
+		if (CONFIG.addFeedback) PrintEntry(context, ADDED_FEEDBACK, index, value.displayText());
 		items.add(index, value);
 		BacklogData.TrySave();
 		return 1;
@@ -333,13 +335,13 @@ public class BacklogCommands
 			return -1;
 		}
 		
-		if (expectedValue != null && !items.get(index).equals(expectedValue)) {
+		if (expectedValue != null && !items.get(index).rawString().equals(expectedValue)) {
 			context.getSource().sendError(Text.literal(String.format("Entry %d does not have the expected value.", index)));
 			return -1;
 		}
 		
 
-		if (CONFIG.delFeedback) PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index));
+		if (CONFIG.delFeedback) PrintEntry(context, REMOVED_FEEDBACK, index, items.get(index).displayText());
 		items.remove(index);
 		BacklogData.TrySave();
 		return 1;
@@ -373,9 +375,7 @@ public class BacklogCommands
 		if (src == dst)
 			return 0;
 
-		String value = items.get(src);
-
-		
+		BacklogEntry value = items.get(src);
 		items.remove(src);
 		items.add(dst, value);
 		BacklogData.TrySave();
