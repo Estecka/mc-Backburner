@@ -18,6 +18,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import tk.estecka.backburner.Backburner;
 import tk.estecka.backburner.BacklogData;
+import tk.estecka.backburner.BacklogEntry;
 import tk.estecka.backburner.mixin.IDrawContextMixin;
 
 import static tk.estecka.backburner.Backburner.CONFIG;
@@ -42,7 +43,7 @@ public class BacklogHud
 	}
 
 	public void	Render(DrawContext context){
-		final List<String> items;
+		final List<BacklogEntry> items;
 		if (BacklogData.instance==null || (items=BacklogData.instance.content) == null || items.isEmpty())
 			return;
 
@@ -69,7 +70,7 @@ public class BacklogHud
 			y = DrawTextBox( context, x, y, HEADER_ID, HEADER_TITLE );
 	
 			for (int i=0; i<items.size(); i++)
-				y = DrawTextBox( context, x, y, ITEM_ID, Text.literal(String.format("%d • %s", i, items.get(i))) );
+				y = DrawTextBox( context, x, y, ITEM_ID, Text.literal(String.format("%d • ", i)).append(items.get(i).displayText()) );
 		}
 
 		matrices.pop();
