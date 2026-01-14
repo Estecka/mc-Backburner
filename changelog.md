@@ -52,3 +52,5 @@
 - The autocomplete for `remove`/`pop` will now show the entry's text.
 ### 1.5.1
 - Marked embedded resource packs as compatible with all upcoming versions of minecraft.
+## 1.6
+- Backlog now accepts SNBT texts as entries.
