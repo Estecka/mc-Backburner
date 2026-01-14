@@ -22,3 +22,11 @@ Current master
 
 ## 1.21.4
 - `ResourceMetadataReader` was replaced with `ResourceMetadataReader`, which must now be backed by a codec.
+
+## 1.21.6
+- `DrawContext::getMatrices` now returns a standard `Matrix3x2fStack`, instead of Mojang's own `MatrixStack`
+- `DrawContext::draw_xxx` now take a render pipeline instead of a render layer.
+- The order of the coordinates in `DrawContext::drawTextureQuad` has changed. (And is now completely inconsistent with itself.)
+- `Drawcontext::drawTextureQuad` no longer requires an accessor.
+- `Drawcontext` no longer provides a vertex provider.
+- `TextRenderer::drawWithOutline` is now incompatible with the data from the draw context.
