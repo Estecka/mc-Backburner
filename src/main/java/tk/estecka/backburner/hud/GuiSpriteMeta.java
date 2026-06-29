@@ -3,7 +3,9 @@ package tk.estecka.backburner.hud;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import net.minecraft.server.packs.resources.ResourceMetadata;
 import net.minecraft.resource.metadata.ResourceMetadata;
+import net.minecraft.server.packs.resources.
 import net.minecraft.resource.metadata.ResourceMetadataReader;
 
 public class GuiSpriteMeta 

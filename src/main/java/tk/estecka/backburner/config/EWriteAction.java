@@ -1,7 +1,8 @@
 package tk.estecka.backburner.config;
 
 import java.util.Optional;
-import net.minecraft.text.Text;
+//import net.minecraft.Component.Component;
+import net.minecraft.network.chat.Component;
 
 public enum EWriteAction
 {
@@ -34,12 +35,12 @@ public enum EWriteAction
 		return "backburner.config.writeAction." + this.name;
 	}
 
-	public Text TranslatableName() {
-		return Text.translatable(this.TranslationKey());
+	public Component TranslatableName() {
+		return Component.translatable(this.TranslationKey());
 	}
 
-	public Optional<Text[]> Tooltip() {
-		return Optional.of(new Text[]{ Text.translatable(this.TranslationKey()+".tooltip") });
+	public Optional<Component[]> Tooltip() {
+		return Optional.of(new Component[]{ Component.translatable(this.TranslationKey()+".tooltip") });
 	}
 
 }

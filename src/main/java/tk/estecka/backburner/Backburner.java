@@ -5,9 +5,9 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import tk.estecka.backburner.config.Config;
 import tk.estecka.backburner.config.ConfigIO;
 import tk.estecka.backburner.hud.GuiSpriteReloadListener;
@@ -34,11 +34,11 @@ public class Backburner implements ClientModInitializer
 		}
 
 		BacklogCommands.Register();
-		ClientPlayConnectionEvents.JOIN.register(Identifier.of(MODID, "reload"), (handler, packet, client)->BacklogData.Reload());
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new GuiSpriteReloadListener());
+		ClientPlayConnectionEvents.JOIN.register(Identifier.fromNamespaceAndPath(MODID, "reload"), (handler, packet, client)->BacklogData.Reload());
+		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new GuiSpriteReloadListener());
 
 		var mod = FabricLoader.getInstance().getModContainer(MODID).get();
-		ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of(MODID, "notebook"), mod, Text.literal("Note-Book"     ), ResourcePackActivationType.NORMAL);
-		ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of(MODID, "questlog"), mod, Text.literal("Final Questlog"), ResourcePackActivationType.NORMAL);
+		ResourceManagerHelper.registerBuiltinResourcePack(Identifier.fromNamespaceAndPath(MODID, "notebook"), mod, Component.literal("Note-Book"     ), ResourcePackActivationType.NORMAL);
+		ResourceManagerHelper.registerBuiltinResourcePack(Identifier.fromNamespaceAndPath(MODID, "questlog"), mod, Component.literal("Final Questlog"), ResourcePackActivationType.NORMAL);
 	}
 }
