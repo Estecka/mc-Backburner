@@ -2,8 +2,8 @@ package tk.estecka.backburner.hud;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resource.metadata.ResourceMetadata;
-import net.minecraft.resource.metadata.ResourceMetadataSerializer;
+import net.minecraft.server.packs.resources.ResourceMetadata;
+import net.minecraft.server.packs.metadata.MetadataSectionType;
 
 public class GuiSpriteMeta
 {
@@ -37,11 +37,11 @@ public class GuiSpriteMeta
 		);
 	}
 
-	static public final ResourceMetadataSerializer<Basis>  BASIS_READER    = new ResourceMetadataSerializer<Basis> ("basis"    , Basis.CODEC);
-	static public final ResourceMetadataSerializer<Margin> PATCH_READER    = new ResourceMetadataSerializer<Margin>("ninepatch", Margin.CODEC);
-	static public final ResourceMetadataSerializer<Margin> PADDING_READER  = new ResourceMetadataSerializer<Margin>("padding"  , Margin.CODEC);
-	static public final ResourceMetadataSerializer<Margin> TEXTAREA_READER = new ResourceMetadataSerializer<Margin>("textarea" , Margin.CODEC);
-	static public final ResourceMetadataSerializer<Colour> COLOUR_READER   = new ResourceMetadataSerializer<Colour>("text"     , Colour.CODEC);
+	static public final MetadataSectionType<Basis>  BASIS_READER    = new MetadataSectionType<Basis> ("basis"    , Basis.CODEC);
+	static public final MetadataSectionType<Margin> PATCH_READER    = new MetadataSectionType<Margin>("ninepatch", Margin.CODEC);
+	static public final MetadataSectionType<Margin> PADDING_READER  = new MetadataSectionType<Margin>("padding"  , Margin.CODEC);
+	static public final MetadataSectionType<Margin> TEXTAREA_READER = new MetadataSectionType<Margin>("textarea" , Margin.CODEC);
+	static public final MetadataSectionType<Colour> COLOUR_READER   = new MetadataSectionType<Colour>("text"     , Colour.CODEC);
 
 	public Basis basis = Basis.DEFAULT;
 	public Margin padding = Margin.DEFAULT;
@@ -51,11 +51,11 @@ public class GuiSpriteMeta
 
 	static public GuiSpriteMeta	Decode(ResourceMetadata meta){
 		var r = new GuiSpriteMeta();
-		r.basis     = meta.decode(BASIS_READER)   .orElse(Basis.DEFAULT);
-		r.ninepatch = meta.decode(PATCH_READER)   .orElse(Margin.DEFAULT);
-		r.padding   = meta.decode(PADDING_READER) .orElse(Margin.DEFAULT);
-		r.textarea  = meta.decode(TEXTAREA_READER).orElse(Margin.DEFAULT);
-		r.text      = meta.decode(COLOUR_READER)  .orElse(Colour.DEFAULT);
+		r.basis     = meta.getSection(BASIS_READER)   .orElse(Basis.DEFAULT);
+		r.ninepatch = meta.getSection(PATCH_READER)   .orElse(Margin.DEFAULT);
+		r.padding   = meta.getSection(PADDING_READER) .orElse(Margin.DEFAULT);
+		r.textarea  = meta.getSection(TEXTAREA_READER).orElse(Margin.DEFAULT);
+		r.text      = meta.getSection(COLOUR_READER)  .orElse(Colour.DEFAULT);
 		return r;
 	}
 

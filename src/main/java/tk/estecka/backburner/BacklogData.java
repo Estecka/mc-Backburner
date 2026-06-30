@@ -66,7 +66,7 @@ public class BacklogData
 				Error reading backlog data. If you have any important data in there, you might want to get this sorted out before pushing any new note.
 				You can use the subcommand `reload` to hot-reload the file after fixing it.
 				""";
-			client.gui.hud.getChat().addMessage(Component.literal(msg).withStyle(ChatFormatting.RED));
+			client.gui.hud.getChat().addClientSystemMessage(Component.literal(msg).withStyle(ChatFormatting.RED));
 			Backburner.LOGGER.error("Errors reading file {}\n{}", saveFile, e);
 			return false;
 		}
@@ -84,7 +84,7 @@ public class BacklogData
 			String msg = """
 				Unable to save the backlog. See game log for more info.
 				""";
-			client.gui.hud.getChat().addMessage(Component.literal(msg).withStyle(ChatFormatting.RED));
+			client.gui.hud.getChat().addClientSystemMessage(Component.literal(msg).withStyle(ChatFormatting.RED));
 			Backburner.LOGGER.error("Error writing file {}\n {}", instance.saveFile, e);
 			return false;
 		}
