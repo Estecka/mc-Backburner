@@ -2,17 +2,15 @@ package tk.estecka.backburner;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.serialization.Codec;
-import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.TagParser;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
 
 /**
  * Keeps a text along with a string pre-encoded version of it.
@@ -22,13 +20,13 @@ import net.minecraft.network.chat.ComponentSerialization;
  */
 public record BacklogEntry(
 	String rawString,
-	Component displayText
+	Text displayText
 ){
 	public BacklogEntry(String raw){
 		this(raw, TextFromRaw(raw));
 	}
 
-	public BacklogEntry(Component text){
+	public BacklogEntry(Text text){
 		this(RawFromText(text), text);
 	}
 
@@ -37,35 +35,35 @@ public record BacklogEntry(
 /* # Codec                                                                    */
 /******************************************************************************/
 
-	static public final Codec<Component> ELT_CODEC = Codec.withAlternative(
-		ComponentSerialization.CODEC,
-		Codec.STRING.xmap(Component::literal, Component::getString)
+	static public final StringNbtReader<NbtElement> READER = StringNbtReader.fromOps(NbtOps.INSTANCE);
+	static public final Codec<Text> ELT_CODEC = Codec.withAlternative(
+		TextCodecs.CODEC,
+		Codec.STRING.xmap(Text::literal, Text::getString)
 	);
-	static public final Codec<Component> ARRAY_CODEC = ELT_CODEC.listOf().xmap(BacklogEntry::combine, Component::getSiblings);
-	static public final Codec<Component> CODEC = Codec.withAlternative(ARRAY_CODEC, ELT_CODEC);
+	static public final Codec<Text> ARRAY_CODEC = ELT_CODEC.listOf().xmap(BacklogEntry::combine, Text::getSiblings);
+	static public final Codec<Text> CODEC = Codec.withAlternative(ARRAY_CODEC, ELT_CODEC);
 
-	private static MutableComponent combine(List<Component> texts) {
-		MutableComponent mutableText = texts.get(0).copy();
+	private static MutableText combine(List<Text> texts) {
+		MutableText mutableText = texts.get(0).copy();
 		for (int i = 1; i < texts.size(); ++i) {
 			mutableText.append(texts.get(i));
 		}
 		return mutableText;
 	}
 
-	static public Component TextFromRaw(String raw){
-		final TagParser READER = new TagParser();
-		Tag nbt;
+	static public Text TextFromRaw(String raw){
+		NbtElement nbt;
 		try {
-			nbt = (Tag) READER.parseFully(raw);
+			nbt = READER.read(raw);
 		}
 		catch (CommandSyntaxException e){
-			return Component.literal(raw);
+			return Text.literal(raw);
 		}
 
-		if (nbt instanceof ListTag nbtList)
+		if (nbt instanceof NbtList nbtList)
 		{
-			List<Component> siblings = new ArrayList<>();
-			for (Tag subNbt : nbtList)
+			List<Text> siblings = new ArrayList<>();
+			for (NbtElement subNbt : nbtList)
 				siblings.add(TextFromNbt(subNbt, "<error>"));
 			return combine(siblings);
 		}
@@ -73,15 +71,15 @@ public record BacklogEntry(
 			return TextFromNbt(nbt, raw);
 	}
 
-	static public Component TextFromNbt(Tag nbt, String fallback){
+	static public Text TextFromNbt(NbtElement nbt, String fallback){
 		var result = CODEC.parse(NbtOps.INSTANCE, nbt);
 		if (result.isError())
-			return Component.literal(fallback);
+			return Text.literal(fallback);
 		else
 			return result.getOrThrow();
 	}
 
-	static public String RawFromText(Component text){
-		return NbtOps.INSTANCE.withEncoder(ComponentSerialization.CODEC).apply(text).getOrThrow().toString();
+	static public String RawFromText(Text text){
+		return NbtOps.INSTANCE.withEncoder(TextCodecs.CODEC).apply(text).getOrThrow().toString();
 	}
 }
