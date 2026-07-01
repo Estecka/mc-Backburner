@@ -44,7 +44,7 @@ public class BacklogData
 		Path savePath;
 
 		if (local != null) {
-			savePath = local.getServerDirectory().resolve("backlog.json");
+			savePath = local.getWorldPath(LevelResource.ROOT).resolve("backlog.json");
 		}
 		else if (info != null) {
 			String address = info.ip.replace(':', ' ');
