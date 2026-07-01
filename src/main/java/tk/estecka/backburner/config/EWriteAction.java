@@ -1,7 +1,6 @@
 package tk.estecka.backburner.config;
 
 import java.util.Optional;
-//import net.minecraft.Component.Component;
 import net.minecraft.network.chat.Component;
 
 public enum EWriteAction

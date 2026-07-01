@@ -32,7 +32,8 @@ public class Backburner implements ClientModInitializer {
 	public void onInitializeClient() {
 		try {
 			CONFIG_IO.GetIfExists(CONFIG);
-		} catch (IOException e) {
+		}
+		catch (IOException e){
 			LOGGER.error("{}", e);
 		}
 

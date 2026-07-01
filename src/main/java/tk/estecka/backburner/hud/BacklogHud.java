@@ -3,7 +3,6 @@ package tk.estecka.backburner.hud;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import net.minecraft.client.DeltaTracker;
 import org.joml.Matrix3x2fStack;
 import net.minecraft.client.Minecraft;
@@ -14,7 +13,6 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.Nullable;
 import tk.estecka.backburner.Backburner;
 import tk.estecka.backburner.BacklogData;
 import tk.estecka.backburner.BacklogEntry;
@@ -86,7 +84,6 @@ public class BacklogHud
 
 		int imgWdt  = CONFIG.hudWdt - patch.paddingHorizontal;
 		int textWdt = imgWdt - patch.minWidth;
-        assert textRenderer != null;
         var lines = textRenderer.split(text, textWdt);
 		int imgHgt = patch.minHeight + (textRenderer.lineHeight * lines.size());
 

@@ -34,5 +34,7 @@ implements SimpleSynchronousResourceReloadListener
 				Backburner.LOGGER.error("{} : {}", id, e);
 			}
 		}
+
 	}
+
 }
