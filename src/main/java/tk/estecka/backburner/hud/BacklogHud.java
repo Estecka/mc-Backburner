@@ -3,6 +3,8 @@ package tk.estecka.backburner.hud;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.minecraft.client.DeltaTracker;
 import org.joml.Matrix3x2fStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -12,6 +14,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 import tk.estecka.backburner.Backburner;
 import tk.estecka.backburner.BacklogData;
 import tk.estecka.backburner.BacklogEntry;
@@ -29,14 +32,14 @@ public class BacklogHud
 	static public boolean isHidden = false;
 
 	private final Minecraft client;
-	private final Font textRenderer;
+	private Font textRenderer;
 
 	public BacklogHud(){
 		this.client = Minecraft.getInstance();
-		this.textRenderer = client.font;
 	}
 
-	public void	Render(GuiGraphicsExtractor context){
+	public void	Render(GuiGraphicsExtractor context, DeltaTracker deltaTracker){
+		this.textRenderer = client.font;
 		final List<BacklogEntry> items;
 		if (BacklogData.instance==null || (items=BacklogData.instance.content) == null || items.isEmpty())
 			return;
@@ -83,7 +86,8 @@ public class BacklogHud
 
 		int imgWdt  = CONFIG.hudWdt - patch.paddingHorizontal;
 		int textWdt = imgWdt - patch.minWidth;
-		var lines = textRenderer.split(text, textWdt);
+        assert textRenderer != null;
+        var lines = textRenderer.split(text, textWdt);
 		int imgHgt = patch.minHeight + (textRenderer.lineHeight * lines.size());
 
 		if (!patch.fill) {
