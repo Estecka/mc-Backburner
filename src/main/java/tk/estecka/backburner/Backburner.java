@@ -45,6 +45,6 @@ public class Backburner implements ClientModInitializer {
 		ResourceLoader.registerBuiltinPack(Identifier.fromNamespaceAndPath(MODID, "notebook"), mod, Component.literal("Note-Book"), PackActivationType.NORMAL);
 		ResourceLoader.registerBuiltinPack(Identifier.fromNamespaceAndPath(MODID, "questlog"), mod, Component.literal("Final Questlog"), PackActivationType.NORMAL);
 
-		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Identifier.fromNamespaceAndPath(MODID, "after_chat"), new BacklogHud()::Render);
+		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Identifier.fromNamespaceAndPath(MODID, "backlog"), new BacklogHud()::Render);
 	}
 }
