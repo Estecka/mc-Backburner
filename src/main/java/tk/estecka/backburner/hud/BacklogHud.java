@@ -84,7 +84,7 @@ public class BacklogHud
 
 		int imgWdt  = CONFIG.hudWdt - patch.paddingHorizontal;
 		int textWdt = imgWdt - patch.minWidth;
-        var lines = textRenderer.split(text, textWdt);
+		var lines = textRenderer.split(text, textWdt);
 		int imgHgt = patch.minHeight + (textRenderer.lineHeight * lines.size());
 
 		if (!patch.fill) {
