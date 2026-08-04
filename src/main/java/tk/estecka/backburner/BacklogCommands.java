@@ -8,17 +8,17 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.resources.Identifier;
 import tk.estecka.backburner.config.EWriteAction;
 import tk.estecka.backburner.hud.BacklogHud;
 import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.Nullable;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static com.mojang.brigadier.arguments.BoolArgumentType.bool;
 import static com.mojang.brigadier.arguments.BoolArgumentType.getBool;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
@@ -30,7 +30,7 @@ import static tk.estecka.backburner.IndexArgumentType.index;
 
 public class BacklogCommands
 {
-	static public final Identifier ID = Identifier.of("backburner", "stack");
+	static public final Identifier ID = Identifier.fromNamespaceAndPath("backburner", "stack");
 
 	static public final String ROOT_COMMAND = CONFIG.rootCommand;
 	static public final String BOOL_ARG  = "bool";
@@ -40,8 +40,8 @@ public class BacklogCommands
 	static public final String SRC_ARG = "from";
 	static public final String DST_ARG = "to";
 
-	static private final Text ADDED_FEEDBACK   = Text.literal("Added: ").formatted(Formatting.BOLD).formatted(Formatting.AQUA);
-	static private final Text REMOVED_FEEDBACK = Text.literal("Removed: ").formatted(Formatting.BOLD).formatted(Formatting.GOLD);
+	static private final Component ADDED_FEEDBACK   = Component.literal("Added: ").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.AQUA);
+	static private final Component REMOVED_FEEDBACK = Component.literal("Removed: ").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.GOLD);
 
 	static public void	Register(){
 		ClientCommandRegistrationCallback.EVENT.register(ID, BacklogCommands::RegisterWith);
@@ -50,7 +50,7 @@ public class BacklogCommands
 	static private IndexArgumentType indexBeforeLast(){ return index(() -> BacklogData.instance.content.size() - 1 ); }
 	static private IndexArgumentType indexAfterLast (){ return index(() -> BacklogData.instance.content.size()     ); }
 
-	static public void	RegisterWith(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess){
+	static public void	RegisterWith(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess){
 		var root = literal(ROOT_COMMAND);
 
 		// root.executes(BacklogCommand::Root);
@@ -202,7 +202,7 @@ public class BacklogCommands
 /******************************************************************************/
 
 	// static private int	Root(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
-	// 	context.getSource().sendFeedback(Text.literal("Main"));
+	// 	context.getSource().sendFeedback(Component.literal("Main"));
 	// 	return 0;
 	// }
 
@@ -274,10 +274,10 @@ public class BacklogCommands
 /* # Command Logic                                                            */
 /******************************************************************************/
 
-	static private void	PrintEntry(CommandContext<FabricClientCommandSource> context, Text prefix, int index, Text value) {
-		var msg = MutableText.of(Text.empty().getContent())
+	static private void	PrintEntry(CommandContext<FabricClientCommandSource> context, Component prefix, int index, Component value) {
+		var msg = MutableComponent.create(Component.empty().getContents())
 			.append(prefix)
-			.append(Text.literal(String.format("#%d ", index)).formatted(Formatting.YELLOW))
+			.append(Component.literal(String.format("#%d ", index)).withStyle(ChatFormatting.YELLOW))
 			.append(value)
 		;
 		context.getSource().sendFeedback(msg);
@@ -286,12 +286,12 @@ public class BacklogCommands
 	static int	Insert(CommandContext<FabricClientCommandSource> context, int index, String rawValue){
 		final var items = BacklogData.instance.content;
 		if (index < 0){
-			context.getSource().sendError(Text.literal(String.format("%d is an invalid index. Pushing item to the front.", index)));
+			context.getSource().sendError(Component.literal(String.format("%d is an invalid index. Pushing item to the front.", index)));
 			index = 0;
 		}
 		
 		if (index > items.size()){
-			context.getSource().sendError(Text.literal(String.format("%d is out of bound. Pushing item to the back.", index)));
+			context.getSource().sendError(Component.literal(String.format("%d is out of bound. Pushing item to the back.", index)));
 			index = items.size();
 		}
 
@@ -305,12 +305,12 @@ public class BacklogCommands
 	static int Set(CommandContext<FabricClientCommandSource> context, int index, String rawValue){
 		final var items = BacklogData.instance.content;
 		if (items.isEmpty()){
-			context.getSource().sendError(Text.literal("Nothing to edit."));
+			context.getSource().sendError(Component.literal("Nothing to edit."));
 			return 0;
 		}
 
 		if (index < 0 || index > items.size()-1){
-			context.getSource().sendError(Text.literal(String.format("Index %d out of bounds.", index)));
+			context.getSource().sendError(Component.literal(String.format("Index %d out of bounds.", index)));
 			return -1;
 		}
 
@@ -326,17 +326,17 @@ public class BacklogCommands
 	static int	Remove(CommandContext<FabricClientCommandSource> context, int index, @Nullable String expectedValue){
 		final var items = BacklogData.instance.content;
 		if (items.isEmpty()){
-			context.getSource().sendError(Text.literal("Nothing to remove."));
+			context.getSource().sendError(Component.literal("Nothing to remove."));
 			return 0;
 		}
 		
 		if (index < 0 || index > items.size()-1){
-			context.getSource().sendError(Text.literal(String.format("Index %d out of bounds. Max %d.", index, items.size()-1)));
+			context.getSource().sendError(Component.literal(String.format("Index %d out of bounds. Max %d.", index, items.size()-1)));
 			return -1;
 		}
 		
 		if (expectedValue != null && !items.get(index).rawString().equals(expectedValue)) {
-			context.getSource().sendError(Text.literal(String.format("Entry %d does not have the expected value.", index)));
+			context.getSource().sendError(Component.literal(String.format("Entry %d does not have the expected value.", index)));
 			return -1;
 		}
 		
@@ -350,12 +350,12 @@ public class BacklogCommands
 	static int Clear(CommandContext<FabricClientCommandSource> context){
 		final var items = BacklogData.instance.content;
 		if (items.isEmpty()){
-			context.getSource().sendError(Text.literal("Nothing to remove."));
+			context.getSource().sendError(Component.literal("Nothing to remove."));
 			return 0;
 		}
 
 		items.clear();
-		context.getSource().sendFeedback(Text.translatable("backburner.feedback.clear", Text.literal("/"+CONFIG.rootCommand+" reload")));
+		context.getSource().sendFeedback(Component.translatable("backburner.feedback.clear", Component.literal("/"+CONFIG.rootCommand+" reload")));
 		return 1;
 	}
 
@@ -363,7 +363,7 @@ public class BacklogCommands
 		final var items = BacklogData.instance.content;
 
 		if (src < 0 || src > items.size()-1){
-			context.getSource().sendError(Text.literal(String.format("Index %d out of bounds. Max %d", src, items.size()-1)));
+			context.getSource().sendError(Component.literal(String.format("Index %d out of bounds. Max %d", src, items.size()-1)));
 			return -1;
 		}
 

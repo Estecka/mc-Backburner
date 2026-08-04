@@ -9,6 +9,7 @@ import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.world.level.storage.LevelResource;
 import org.jetbrains.annotations.NotNull;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -16,12 +17,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.WorldSavePath;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 
-public class BacklogData 
+public class BacklogData
 {
 	static public BacklogData	instance = null;
 
@@ -36,17 +36,17 @@ public class BacklogData
 	}
 
 	static public boolean	Reload(){
-		final var client = MinecraftClient.getInstance();
-		final var info = client.getCurrentServerEntry();
-		final var local = client.getServer();
+		final var client = Minecraft.getInstance();
+		final var info = client.getCurrentServer();
+		final var local = client.getSingleplayerServer();
 		Path savePath;
 
 		if (local != null) {
-			savePath = local.getSavePath(WorldSavePath.ROOT).resolve("backlog.json");
+			savePath = local.getWorldPath(LevelResource.ROOT).resolve("backlog.json");
 		}
 		else if (info != null) {
-			String address = info.address.replace(':', ' ');
-			savePath = client.runDirectory.toPath().resolve("remote_backlogs/"+address+".json");
+			String address = info.ip.replace(':', ' ');
+			savePath = client.gameDirectory.toPath().resolve("remote_backlogs/"+address+".json");
 		}
 		else {
 			Backburner.LOGGER.error("Unable to find backburner's backlog save path. You can ignore this error if it occured during a Replay.");
@@ -64,7 +64,7 @@ public class BacklogData
 				Error reading backlog data. If you have any important data in there, you might want to get this sorted out before pushing any new note.
 				You can use the subcommand `reload` to hot-reload the file after fixing it.
 				""";
-			client.inGameHud.getChatHud().addMessage(Text.literal(msg).formatted(Formatting.RED));
+			client.gui.hud.getChat().addClientSystemMessage(Component.literal(msg).withStyle(ChatFormatting.RED));
 			Backburner.LOGGER.error("Errors reading file {}\n{}", saveFile, e);
 			return false;
 		}
@@ -78,11 +78,11 @@ public class BacklogData
 			return true;
 		}
 		catch (IOException e){
-			final MinecraftClient client = MinecraftClient.getInstance();
+			final Minecraft client = Minecraft.getInstance();
 			String msg = """
 				Unable to save the backlog. See game log for more info.
 				""";
-			client.inGameHud.getChatHud().addMessage(Text.literal(msg).formatted(Formatting.RED));
+			client.gui.hud.getChat().addClientSystemMessage(Component.literal(msg).withStyle(ChatFormatting.RED));
 			Backburner.LOGGER.error("Error writing file {}\n {}", instance.saveFile, e);
 			return false;
 		}
