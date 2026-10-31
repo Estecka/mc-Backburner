@@ -53,4 +53,7 @@
 ### 1.5.1
 - Marked embedded resource packs as compatible with all upcoming versions of minecraft.
 ## 1.6
+### 1.6.0
 - Backlog now accepts SNBT texts as entries.
+### 1.6.1
+- Updated for MC 26.3
