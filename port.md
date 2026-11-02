@@ -30,3 +30,6 @@ Current master
 - `Drawcontext::drawTextureQuad` no longer requires an accessor.
 - `Drawcontext` no longer provides a vertex provider.
 - `TextRenderer::drawWithOutline` is now incompatible with the data from the draw context.
+
+## 26.3
+- Something In the fabric API resource reload api changed, and the new deprecated classes are broken. Simply recompiling fixes it.

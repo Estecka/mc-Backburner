@@ -4,9 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.packs.PackType;
@@ -38,8 +36,16 @@ public class Backburner implements ClientModInitializer {
 		}
 
 		BacklogCommands.Register();
-		ClientPlayConnectionEvents.JOIN.register(Identifier.fromNamespaceAndPath(MODID, "reload"), (handler, packet, client) -> BacklogData.Reload());
-		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new GuiSpriteReloadListener());
+
+		ClientPlayConnectionEvents.JOIN.register(
+			Identifier.fromNamespaceAndPath(MODID, "reload"),
+			(handler, packet, client) -> BacklogData.Reload()
+		);
+
+		ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(
+			GuiSpriteReloadListener.ID,
+			new GuiSpriteReloadListener()
+		);
 
 		var mod = FabricLoader.getInstance().getModContainer(MODID).get();
 		ResourceLoader.registerBuiltinPack(Identifier.fromNamespaceAndPath(MODID, "notebook"), mod, Component.literal("Note-Book"), PackActivationType.NORMAL);
